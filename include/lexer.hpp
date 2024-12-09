@@ -14,6 +14,8 @@ private:
 
     inline void ParseNextKeyword(std::ifstream& input_stream, Token& token);
     inline void ParseNextIdentifier(std::ifstream& input_stream, Token& token);
+    inline void ParseNextIntLiteral(std::ifstream& input_stream, Token& token);
+    inline void ParseNextStringLiteral(std::ifstream& input_stream, Token& token);
 
     int GetNextToken(std::ifstream& input_stream, Token& token);
 public:

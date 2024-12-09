@@ -4,15 +4,26 @@
 
 enum TokenType {
     // Keywords
-    FUNCTION,
     VARIABLE,
+    FUNCTION,
+    LABEL,
+    IF,
+    JUMP,
     END,
 
+    IDENTIFIER,
+
+    INT_LITERAL,
+    STRING_LITERAL,
+
+    // Operators
     ASSIGN,
     EQUALS,
+    NEGATION,
+    NOT_EQUALS,
+    BIGGER,
+    SMALLER,
 
-    IDENTIFIER,
-    LITERAL,
     PARENTHESES
 };
 

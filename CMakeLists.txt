@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.10)
 # Define the project name
 project(Ott-Lang)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # Add the include directory to the search path for header files
 include_directories(include)
 
