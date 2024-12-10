@@ -6,6 +6,8 @@
 #include "tokens.hpp"
 
 enum class ASTNodeType {
+    ROOT,
+
     FUNC_DEF,
 
     STMT_SEQ,
@@ -34,6 +36,10 @@ struct FuncDefData {
     ASTNode *name;
     std::vector<ASTNode*> args;
     ASTNode *body;
+};
+
+struct RootData {
+    ASTNode *next;
 };
 
 struct StmtSeqData {
@@ -80,15 +86,32 @@ struct BinaryExprData {
 };
 
 union ASTNodeData {
+    RootData root;
     FuncDefData func_def;
+
     StmtSeqData stmt_seq;
+    IfStmtData if_stmt;
+    WhileStmtData while_stmt;
+    RetStmtData ret_stmt;
+    AssignStmtData assign_stmt;
+
+    IdentifierData idfier;
+    LiteralData lit;
+
     UnaryExprData unary_expr;
     BinaryExprData bin_expr;
+
+    ASTNodeData() {}
+    ~ASTNodeData() {}
 };
 
 struct ASTNode {
     ASTNodeType type;
     ASTNodeData data;
+
+    ASTNode(ASTNodeType typeP) : type(typeP) {}
+    ASTNode() {}
+    ~ASTNode() {}
 };
 
 class Parser {

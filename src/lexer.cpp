@@ -1,7 +1,7 @@
 #include "lexer.hpp"
 
 char GetNextCharacter(std::ifstream& input_stream) {
-    char ch;
+    char ch = 0;
     
     input_stream.get(ch);
     if (input_stream.eof())
@@ -11,7 +11,7 @@ char GetNextCharacter(std::ifstream& input_stream) {
 }
 
 char CheckNextCharacter(std::ifstream& input_stream) {
-    char ch;
+    char ch = 0;
 
     input_stream.get(ch);
     if (input_stream.eof())
@@ -52,12 +52,12 @@ void Lexer::GenerateTokenStream(std::string filename, std::vector<Token>& token_
 
 inline void Lexer::ParseNextKeyword(std::ifstream& input_stream, Token& token) {
     static std::unordered_map<std::string, TokenType> keywords = {
-        {"FUNCTION", FUNCTION},
-        {"VARIABLE", VARIABLE},
-        {"END",      END     },
-        {"IF",       IF      },
-        {"JUMP",     JUMP    },
-        {"LABEL",    LABEL   }
+        {"FUNCTION", TokenType::FUNCTION},
+        {"VARIABLE", TokenType::VARIABLE},
+        {"END",      TokenType::END     },
+        {"IF",       TokenType::IF      },
+        {"JUMP",     TokenType::JUMP    },
+        {"LABEL",    TokenType::LABEL   }
     };
 
     char ch = 0;
@@ -108,7 +108,7 @@ inline void Lexer::ParseNextIdentifier(std::ifstream& input_stream, Token& token
         last_ch = ch;
     }
 
-    token.type = IDENTIFIER;
+    token.type = TokenType::IDENTIFIER;
 
     input_stream.seekg(-1, std::ios::cur);
 }
@@ -135,7 +135,7 @@ inline void Lexer::ParseNextIntLiteral(std::ifstream& input_stream, Token& token
         last_ch = ch;
     }
 
-    token.type = INT_LITERAL;
+    token.type = TokenType::INT_LITERAL;
 
     input_stream.seekg(-1, std::ios::cur);
 }
@@ -153,7 +153,7 @@ inline void Lexer::ParseNextStringLiteral(std::ifstream& input_stream, Token& to
         token.value.push_back(ch);
     }
 
-    token.type = STRING_LITERAL;
+    token.type = TokenType::STRING_LITERAL;
 
     input_stream.seekg(-1, std::ios::cur);
 }
@@ -172,7 +172,7 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
         switch (ch) {
         case '(':
         case ')':
-            token.type = PARENTHESES;
+            token.type = TokenType::PARENTHESES;
             token.value = ch;
             return 1;
         case '=':
@@ -180,14 +180,14 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
             if (ch < 0)
                 return -1;
             if (ch == '=') {
-                token.type = EQUALS;
+                token.type = TokenType::EQUALS;
                 token.value = "==";
 
                 (void) GetNextCharacter(input_stream);
 
                 return 1;
             }
-            token.type = ASSIGN;
+            token.type = TokenType::ASSIGN;
             token.value = "=";
             return 1;
         case '!':
@@ -195,22 +195,22 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
             if (ch < 0)
                 return -1;
             if (ch == '=') {
-                token.type = NOT_EQUALS;
+                token.type = TokenType::NOT_EQUALS;
                 token.value = "!=";
 
                 (void) GetNextCharacter(input_stream);
 
                 return 1;
             }
-            token.type = NEGATION;
+            token.type = TokenType::NEGATION;
             token.value = "!";
             return 1;
         case '>':
-            token.type = BIGGER;
+            token.type = TokenType::BIGGER;
             token.value = ">";
             return 1;
         case '<':
-            token.type = SMALLER;
+            token.type = TokenType::SMALLER;
             token.value = "<";
             return 1;
         case 0x22:
@@ -221,22 +221,26 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
             break;
         }
 
-        input_stream.seekg(-1, std::ios::cur);
-
         // Int literal
         if (std::isdigit(ch)) {
+            input_stream.seekg(-1, std::ios::cur);
+
             ParseNextIntLiteral(input_stream, token);
             return 1;
         }
 
         // Keyword
         else if (std::isalpha(ch) && std::isupper(ch)) {
+            input_stream.seekg(-1, std::ios::cur);
+
             ParseNextKeyword(input_stream, token);
             return 1;
         }
 
         // Identifier
         else if (std::isalpha(ch)) {
+            input_stream.seekg(-1, std::ios::cur);
+
             ParseNextIdentifier(input_stream, token);
             return 1;
         }
