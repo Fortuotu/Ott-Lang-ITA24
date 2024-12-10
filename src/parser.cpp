@@ -21,14 +21,14 @@ ASTNode *Parser::GenerateAST(std::vector<Token>& tokens) {
             node = new ASTNode(ASTNodeType::FUNC_DEF);
             
             idfier = new ASTNode(ASTNodeType::IDENTIFIER);
-            idfier->data.idfier.name = tokens[++i].value;
+            //idfier->data.idfier.name = tokens[++i].value;
 
             ++i;
             
             ASTNode *arg_idfier;
             while (tokens[i].type == TokenType::IDENTIFIER) {
                 arg_idfier = new ASTNode(ASTNodeType::IDENTIFIER);
-                arg_idfier->data.idfier.name = tokens[i].value;
+                //arg_idfier->data.idfier.name = tokens[i].value;
 
                 node->data.func_def.args.push_back(arg_idfier);
 

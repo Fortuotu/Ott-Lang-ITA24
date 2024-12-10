@@ -32,6 +32,8 @@ enum class ExprOperator {
     LESS_THAN,
 };
 
+struct ASTNode;
+
 struct FuncDefData {
     ASTNode *name;
     std::vector<ASTNode*> args;
@@ -82,7 +84,7 @@ struct UnaryExprData {
 struct BinaryExprData {
     ExprOperator op;
     ASTNode *oprnd1;
-    ASTNode *oprnd1;
+    ASTNode *oprnd;
 };
 
 union ASTNodeData {
