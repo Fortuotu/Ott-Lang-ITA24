@@ -1,11 +1,1 @@
-
-
-FUNCTION sigma_print(sigma_arg_one, sigma_arg_two)
-    IF (you_are_a_sigma == 1)
-        VARIABLE what_the_sigma = 1234
-
-        log(what_the_sigma)
-    END
-END
-
-CALL sigma_print(923, 620)
+56 + 98 * 21
