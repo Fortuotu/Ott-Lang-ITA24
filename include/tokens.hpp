@@ -1,33 +1,61 @@
 #pragma once
 
+#include <vector>
 #include <string>
 
 enum class TokenType {
-    // Keywords
     VARIABLE,
     FUNCTION,
-    LABEL,
     IF,
-    JUMP,
+    WHILE,
     END,
+    RETURN,
 
     IDENTIFIER,
-
     INT_LITERAL,
     STRING_LITERAL,
 
-    // Operators
-    ASSIGN,
-    EQUALS,
-    NEGATION,
-    NOT_EQUALS,
-    BIGGER,
-    SMALLER,
+    NOT,
+    NEGATE,
 
-    PARENTHESES
+    ADD,
+    SUBTRACT,
+    MULTIPLY,
+    DIVIDE,
+    MODULUS,
+    
+    ASSIGN,
+
+    EQUAL,
+    NOT_EQUAL,
+    GREATER,
+    LESS,
+    GREATER_OR_EQUAL,
+    LESS_OR_EQUAL,
+
+    PARENTHESES,
+    COMMA,
+
+    TOKENS_END
 };
 
 struct Token {
     TokenType type;
     std::string value;
+};
+
+class TokenStream {
+private:
+    std::vector<Token> tokens_;
+    size_t selector_ = 0;
+
+    Token end_token_;
+public:
+    TokenStream();
+
+    std::vector<Token>& InternalVector();
+
+    Token ConsumeToken();
+    Token CheckToken();
+    void SkipToken();
 };

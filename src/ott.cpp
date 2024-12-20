@@ -4,11 +4,11 @@
 int main(void) {
     Lexer lexer;
     Parser parser;
-
-    std::vector<Token> tokens;
+    
+    TokenStream tokens;
     lexer.GenerateTokenStream("../test.ott", tokens);
 
-    ASTNode* root = parser.GenerateAST(tokens);
+    ASTNode *root = parser.GenerateAST(tokens);
 
     return 0;
 }

@@ -34,3 +34,5 @@
 # Goofy ahh vscode and build stuff
 .*
 build
+debug
+test.ott

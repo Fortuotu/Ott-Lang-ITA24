@@ -1,5 +1,7 @@
 #include "parser.hpp"
 
+#include "iostream"
+
 Parser::Parser() {
 
 }
@@ -8,43 +10,43 @@ Parser::~Parser() {
     
 }
 
-ASTNode *Parser::GenerateAST(std::vector<Token>& tokens) {
-    ASTNode *root = new ASTNode(ASTNodeType::ROOT);
-    ASTNode **last_scope_handle = &root->data.root.next;
+ASTNode* Parser::GenerateAST(TokenStream& tokens) {
+    return ParseExpr(tokens);
+}
 
-    ASTNode *node = nullptr;
-    ASTNode *idfier = nullptr;
+ASTNode* Parser::ParseExpr(TokenStream& tokens) {
+    return ParseTerm(tokens);
+}
 
-    for (size_t i = 0; i < tokens.size(); ++i) {
-        switch (tokens[i].type) {
-        case TokenType::FUNCTION:
-            node = new ASTNode(ASTNodeType::FUNC_DEF);
-            
-            idfier = new ASTNode(ASTNodeType::IDENTIFIER);
-            //idfier->data.idfier.name = tokens[++i].value;
+ASTNode* Parser::ParseTerm(TokenStream& tokens) {
+    Token tok;
 
-            ++i;
-            
-            ASTNode *arg_idfier;
-            while (tokens[i].type == TokenType::IDENTIFIER) {
-                arg_idfier = new ASTNode(ASTNodeType::IDENTIFIER);
-                //arg_idfier->data.idfier.name = tokens[i].value;
+    ASTNode* root = ParseFactor(tokens);
 
-                node->data.func_def.args.push_back(arg_idfier);
+    tok = tokens.CheckToken();
+    if (tok.type == TokenType::ADD || tok.type == TokenType::SUBTRACT) {
+        Token operator_ = tokens.ConsumeToken();
+        ASTNode *term = ParseTerm(tokens);
 
-                ++i;
-            }
-            
-            node->data.func_def.name = idfier;
+        root = new BinaryExpr(operator_.type, root, term);
+    }
 
-            node->data.func_def.body = new ASTNode(ASTNodeType::STMT_SEQ);
+    return root;
+}
 
-            *last_scope_handle = node->data.func_def.body;
-            last_scope_handle = &node->data.func_def.body;
-            break;
-        default:
-            break;
-        }
+ASTNode* Parser::ParseFactor(TokenStream& tokens) {
+    Token tok;
+
+    tok = tokens.ConsumeToken();
+
+    ASTNode* root = new LiteralExpr(TokenType::INT_LITERAL, std::atoi(tok.value.c_str()));
+
+    tok = tokens.CheckToken();
+    if (tok.type == TokenType::MULTIPLY || tok.type == TokenType::DIVIDE) {
+        Token operator_ = tokens.ConsumeToken();
+        ASTNode* factor = ParseFactor(tokens);
+
+        root = new BinaryExpr(operator_.type, root, factor);
     }
 
     return root;

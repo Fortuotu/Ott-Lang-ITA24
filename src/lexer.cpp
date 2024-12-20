@@ -30,13 +30,17 @@ Lexer::~Lexer() {
 
 }
 
-void Lexer::ParseToken(std::string& token_str, std::vector<Token>& token_stream) {
-    std::cout << token_str << '\n';
-}
-
-void Lexer::GenerateTokenStream(std::string filename, std::vector<Token>& token_stream) {
+void Lexer::GenerateTokenStream(std::string filename, TokenStream& token_stream) {
     std::ifstream input_stream(filename);
+
+    if (!input_stream.is_open()) {
+        std::cout << "Failed to open file.\n";
+        exit(1);
+    }
+
     Token token;
+
+    std::vector<Token>& tokens = token_stream.InternalVector();
 
     while (true) {
         token.value.clear();
@@ -46,7 +50,7 @@ void Lexer::GenerateTokenStream(std::string filename, std::vector<Token>& token_
             return;
         }
 
-        token_stream.push_back(token);
+        tokens.push_back(token);
     }
 }
 
@@ -56,8 +60,7 @@ inline void Lexer::ParseNextKeyword(std::ifstream& input_stream, Token& token) {
         {"VARIABLE", TokenType::VARIABLE},
         {"END",      TokenType::END     },
         {"IF",       TokenType::IF      },
-        {"JUMP",     TokenType::JUMP    },
-        {"LABEL",    TokenType::LABEL   }
+        {"RETURN",   TokenType::RETURN  },
     };
 
     char ch = 0;
@@ -161,11 +164,12 @@ inline void Lexer::ParseNextStringLiteral(std::ifstream& input_stream, Token& to
 int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
     char ch = 0;
 
-    while (ch = GetNextCharacter(input_stream)) {
+    while (true) {
+        ch = GetNextCharacter(input_stream);
         if (ch < 0)
             break;
 
-        if (std::isspace(ch))
+        if (std::isspace(ch) || ch == '\0')
             continue;
 
         // Fixed length tokens
@@ -180,7 +184,7 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
             if (ch < 0)
                 return -1;
             if (ch == '=') {
-                token.type = TokenType::EQUALS;
+                token.type = TokenType::EQUAL;
                 token.value = "==";
 
                 (void) GetNextCharacter(input_stream);
@@ -195,23 +199,43 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
             if (ch < 0)
                 return -1;
             if (ch == '=') {
-                token.type = TokenType::NOT_EQUALS;
+                token.type = TokenType::NOT_EQUAL;
                 token.value = "!=";
 
                 (void) GetNextCharacter(input_stream);
 
                 return 1;
             }
-            token.type = TokenType::NEGATION;
+            token.type = TokenType::NEGATE;
             token.value = "!";
             return 1;
         case '>':
-            token.type = TokenType::BIGGER;
+            token.type = TokenType::GREATER;
             token.value = ">";
             return 1;
         case '<':
-            token.type = TokenType::SMALLER;
+            token.type = TokenType::LESS;
             token.value = "<";
+            return 1;
+        case '+':
+            token.type = TokenType::ADD;
+            token.value = "+";
+            return 1;
+        case '-':
+            token.type = TokenType::SUBTRACT;
+            token.value = "-";
+            return 1;
+        case '*':
+            token.type = TokenType::MULTIPLY;
+            token.value = "*";
+            return 1;
+        case '/':
+            token.type = TokenType::DIVIDE;
+            token.value = "/";
+            return 1;
+        case ',':
+            token.type = TokenType::COMMA;
+            token.value = ",";
             return 1;
         case 0x22:
             // String literal
