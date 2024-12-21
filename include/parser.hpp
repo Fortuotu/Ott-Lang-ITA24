@@ -10,12 +10,13 @@
 
 class Parser {
 private:
-    ASTNode* ParseFactor(TokenStream& tokens);
-    ASTNode* ParseTerm(TokenStream& tokens);
+    Expr* ParseUnary(TokenStream& tokens);
+    Expr* ParseFactor(TokenStream& tokens);
+    Expr* ParseTerm(TokenStream& tokens);
+    Expr* ParseCondition(TokenStream& tokens);
+    Expr* ParseEquality(TokenStream& tokens);
 
-    ASTNode* ParseExpr(TokenStream& tokens);
-
-    ASTNode* ParseStmt(TokenStream& tokens);
+    Expr* ParseExpr(TokenStream& tokens);
 public:
     Parser();
     ~Parser();

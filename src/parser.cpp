@@ -14,19 +14,53 @@ ASTNode* Parser::GenerateAST(TokenStream& tokens) {
     return ParseExpr(tokens);
 }
 
-ASTNode* Parser::ParseExpr(TokenStream& tokens) {
-    return ParseTerm(tokens);
+Expr* Parser::ParseExpr(TokenStream& tokens) {
+    return ParseEquality(tokens);
 }
 
-ASTNode* Parser::ParseTerm(TokenStream& tokens) {
+Expr* Parser::ParseEquality(TokenStream& tokens) {
     Token tok;
 
-    ASTNode* root = ParseFactor(tokens);
+    Expr* root = ParseCondition(tokens);
+
+    tok = tokens.CheckToken();
+    if (tok.type == TokenType::EQUAL || tok.type == TokenType::NOT_EQUAL) {
+        Token operator_ = tokens.ConsumeToken();
+        Expr* cond = ParseCondition(tokens);
+
+        root = new BinaryExpr(operator_.type, root, cond);
+    }
+
+    return root;
+}
+
+Expr* Parser::ParseCondition(TokenStream& tokens) {
+    Token tok;
+
+    Expr* root = ParseTerm(tokens);
+
+    tok = tokens.CheckToken();
+    if (tok.type == TokenType::GREATER || tok.type == TokenType::LESS ||
+        tok.type == TokenType::GREATER_OR_EQUAL || tok.type == TokenType::LESS_OR_EQUAL) {
+        
+        Token operator_ = tokens.ConsumeToken();
+        Expr* cond = ParseCondition(tokens);
+
+        root = new BinaryExpr(operator_.type, root, cond);
+    }
+
+    return root;
+}
+
+Expr* Parser::ParseTerm(TokenStream& tokens) {
+    Token tok;
+
+    Expr* root = ParseFactor(tokens);
 
     tok = tokens.CheckToken();
     if (tok.type == TokenType::ADD || tok.type == TokenType::SUBTRACT) {
         Token operator_ = tokens.ConsumeToken();
-        ASTNode *term = ParseTerm(tokens);
+        Expr* term = ParseTerm(tokens);
 
         root = new BinaryExpr(operator_.type, root, term);
     }
@@ -34,19 +68,37 @@ ASTNode* Parser::ParseTerm(TokenStream& tokens) {
     return root;
 }
 
-ASTNode* Parser::ParseFactor(TokenStream& tokens) {
+Expr* Parser::ParseFactor(TokenStream& tokens) {
     Token tok;
 
-    tok = tokens.ConsumeToken();
-
-    ASTNode* root = new LiteralExpr(TokenType::INT_LITERAL, std::atoi(tok.value.c_str()));
+    Expr* root = ParseUnary(tokens);
 
     tok = tokens.CheckToken();
     if (tok.type == TokenType::MULTIPLY || tok.type == TokenType::DIVIDE) {
         Token operator_ = tokens.ConsumeToken();
-        ASTNode* factor = ParseFactor(tokens);
+        Expr* factor = ParseFactor(tokens);
 
         root = new BinaryExpr(operator_.type, root, factor);
+    }
+
+    return root;
+}
+
+Expr* Parser::ParseUnary(TokenStream& tokens) {
+    Token tok;
+
+    tok = tokens.ConsumeToken();
+
+    Expr* root = nullptr;
+
+    if (tok.type == TokenType::NOT || tok.type == TokenType::NEGATE) {
+        root = new UnaryExpr(tok.type, ParseUnary(tokens));
+
+        return root;
+    }
+
+    if (tok.type == TokenType::INT_LITERAL) {
+        root = new LiteralExpr(tok.type, std::atoi(tok.value.c_str()));
     }
 
     return root;

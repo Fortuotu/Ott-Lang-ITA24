@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Ott-Lang)
 
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the include directory to the search path for header files
 include_directories(include)
@@ -16,4 +18,4 @@ add_subdirectory(src)
 add_executable(ott src/ott.cpp)
 
 # Link the compiled libraries (lexer, tokens) to the executable
-target_link_libraries(ott lexer tokens parser)
+target_link_libraries(ott lexer tokens parser ast)

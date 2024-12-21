@@ -1,5 +1,6 @@
 #include "lexer.hpp"
 #include "parser.hpp"
+#include "ast.hpp"
 
 int main(void) {
     Lexer lexer;
@@ -8,7 +9,10 @@ int main(void) {
     TokenStream tokens;
     lexer.GenerateTokenStream("../test.ott", tokens);
 
-    ASTNode *root = parser.GenerateAST(tokens);
+    ASTNode* root = parser.GenerateAST(tokens);
 
+    ExprPrinter printer;
+    printer.print((Expr*)root);
+    
     return 0;
 }

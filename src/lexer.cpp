@@ -206,7 +206,7 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
 
                 return 1;
             }
-            token.type = TokenType::NEGATE;
+            token.type = TokenType::NOT;
             token.value = "!";
             return 1;
         case '>':
@@ -244,7 +244,7 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
         default:
             break;
         }
-
+        
         // Int literal
         if (std::isdigit(ch)) {
             input_stream.seekg(-1, std::ios::cur);
