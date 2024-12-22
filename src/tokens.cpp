@@ -16,14 +16,20 @@ Token TokenStream::ConsumeToken() {
     return tokens_[selector_++];
 }
 
+Token TokenStream::ValidateToken(TokenType tt) {
+    Token t = ConsumeToken();
+
+    if (t.type != tt) {
+        return end_token_;
+    }
+
+    return t;
+}
+
 Token TokenStream::CheckToken() {
     if (selector_ >= tokens_.size()) {
         return end_token_;
     }
 
     return tokens_[selector_];
-}
-
-void TokenStream::SkipToken() {
-    selector_++;
 }

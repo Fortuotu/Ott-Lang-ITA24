@@ -1,6 +1,6 @@
 #include "ast.hpp"
 
-#include <iostream>
+#include <iostream> 
 
 void token_type_to_str(TokenType tt, std::string& s) {
     s.clear();
@@ -33,9 +33,6 @@ void token_type_to_str(TokenType tt, std::string& s) {
     case TokenType::NOT:
         s = '!';
         break;
-    case TokenType::NEGATE:
-        s = '-';
-        break;
     default:
         break;
     }
@@ -51,7 +48,7 @@ void ExprPrinter::visitBinaryExpr(BinaryExpr& expr) {
     expr.left->accept(*this);
     space();
 
-    token_type_to_str(expr.GetType(), temp);
+    token_type_to_str(expr.op, temp);
     buf.append(temp);
 
     space();
@@ -73,6 +70,16 @@ void ExprPrinter::visitUnaryExpr(UnaryExpr& expr) {
     buf.append(temp);
 
     expr.operand->accept(*this);
+
+    buf.push_back(')');
+}
+
+void ExprPrinter::visitGroupingExpr(GroupingExpr& expr) {
+    buf.push_back('(');
+
+    buf.append("group ");
+
+    expr.expr->accept(*this);
 
     buf.push_back(')');
 }

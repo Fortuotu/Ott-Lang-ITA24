@@ -10,6 +10,7 @@
 
 class Parser {
 private:
+    Expr* ParseGrouping(TokenStream& tokens);
     Expr* ParseUnary(TokenStream& tokens);
     Expr* ParseFactor(TokenStream& tokens);
     Expr* ParseTerm(TokenStream& tokens);

@@ -175,8 +175,11 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
         // Fixed length tokens
         switch (ch) {
         case '(':
+            token.type = TokenType::OPEN_PARENTHESES;
+            token.value = ch;
+            return 1;
         case ')':
-            token.type = TokenType::PARENTHESES;
+            token.type = TokenType::CLOSE_PARENTHESES;
             token.value = ch;
             return 1;
         case '=':

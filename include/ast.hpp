@@ -5,6 +5,7 @@
 struct UnaryExpr;
 struct BinaryExpr;
 struct LiteralExpr;
+struct GroupingExpr;
 
 class ExprVisitor {
 public:
@@ -12,10 +13,11 @@ public:
     virtual void visitUnaryExpr(UnaryExpr& expr) = 0;
     virtual void visitBinaryExpr(BinaryExpr& expr) = 0;
     virtual void visitLiteralExpr(LiteralExpr& expr) = 0;
+    virtual void visitGroupingExpr(GroupingExpr& expr) = 0;
 };
 
 struct ASTNode {
-    virtual TokenType GetType() = 0;
+
 };
 
 struct Expr : ASTNode {
@@ -27,7 +29,6 @@ struct UnaryExpr : Expr {
     Expr *operand;
 
     UnaryExpr(TokenType opP, Expr *operandP) : op(opP), operand(operandP) {}
-    TokenType GetType() override { return op; }
 
     virtual void accept(ExprVisitor& visitor) override { visitor.visitUnaryExpr(*this); }
 };
@@ -37,7 +38,6 @@ struct BinaryExpr : Expr {
     Expr *left, *right;
 
     BinaryExpr(TokenType opP, Expr *leftP, Expr *rightP) : op(opP), left(leftP), right(rightP) {}
-    TokenType GetType() override { return op; }
 
     virtual void accept(ExprVisitor& visitor) override { visitor.visitBinaryExpr(*this); };
 };
@@ -47,11 +47,19 @@ struct LiteralExpr : Expr {
     int val;
 
     LiteralExpr(TokenType typeP, int valP) : type(typeP), val(valP) {}
-    TokenType GetType() override { return type; }
 
     virtual void accept(ExprVisitor& visitor) override { visitor.visitLiteralExpr(*this); };
 };
 
+struct GroupingExpr : Expr {
+    Expr* expr;
+
+    GroupingExpr(Expr* exprP) : expr(exprP) {}
+
+    virtual void accept(ExprVisitor& visitor) override { visitor.visitGroupingExpr(*this); };
+};
+
+// For debugging syntax trees.
 class ExprPrinter : ExprVisitor {
 private:
     std::string buf;
@@ -62,6 +70,7 @@ public:
     void visitUnaryExpr(UnaryExpr& expr) override;
     void visitBinaryExpr(BinaryExpr& expr) override;
     void visitLiteralExpr(LiteralExpr& expr) override;
+    void visitGroupingExpr(GroupingExpr& expr) override;
 
     ExprPrinter() {}
     ~ExprPrinter() {}

@@ -87,13 +87,36 @@ Expr* Parser::ParseFactor(TokenStream& tokens) {
 Expr* Parser::ParseUnary(TokenStream& tokens) {
     Token tok;
 
-    tok = tokens.ConsumeToken();
+    Expr* root = nullptr;
+
+    tok = tokens.CheckToken();
+    if (tok.type == TokenType::NOT || tok.type == TokenType::SUBTRACT) {
+        root = new UnaryExpr(tok.type, ParseUnary(tokens));
+
+        return root;
+    }
+
+    root = ParseGrouping(tokens);
+
+    return root;
+}
+
+Expr* Parser::ParseGrouping(TokenStream& tokens) {
+    Token tok;
 
     Expr* root = nullptr;
 
-    if (tok.type == TokenType::NOT || tok.type == TokenType::NEGATE) {
-        root = new UnaryExpr(tok.type, ParseUnary(tokens));
+    tok = tokens.ConsumeToken();
 
+    if (tok.type == TokenType::OPEN_PARENTHESES) {
+        root = new GroupingExpr(ParseExpr(tokens));
+
+        tok = tokens.ConsumeToken();
+        if (tok.type != TokenType::CLOSE_PARENTHESES) {
+            // error
+            std::cout << "Expected closing parentheses\n";
+            exit(1);
+        }
         return root;
     }
 

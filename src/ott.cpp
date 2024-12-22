@@ -10,7 +10,6 @@ int main(void) {
     lexer.GenerateTokenStream("../test.ott", tokens);
 
     ASTNode* root = parser.GenerateAST(tokens);
-
     ExprPrinter printer;
     printer.print((Expr*)root);
     

@@ -33,7 +33,8 @@ enum class TokenType {
     GREATER_OR_EQUAL,
     LESS_OR_EQUAL,
 
-    PARENTHESES,
+    OPEN_PARENTHESES,
+    CLOSE_PARENTHESES,
     COMMA,
 
     TOKENS_END
@@ -56,6 +57,6 @@ public:
     std::vector<Token>& InternalVector();
 
     Token ConsumeToken();
+    Token ValidateToken(TokenType tt);
     Token CheckToken();
-    void SkipToken();
 };
