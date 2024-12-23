@@ -23,8 +23,8 @@ private:
 
     Stmt* ParseStmt(TokenStream& tokens);
 public:
-    Parser();
-    ~Parser();
+    Parser() {}
+    ~Parser() {}
 
     // parse function
     AST* GenerateAST(TokenStream& tokens);

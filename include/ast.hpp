@@ -65,7 +65,23 @@ struct GroupingExpr : Expr {
     virtual int accept(ExprVisitor& visitor) override { return visitor.visitGroupingExpr(*this); };
 };
 
-// For debugging syntax trees.
+struct Stmt {
+    virtual void accept(StmtVisitor& visitor) = 0;
+};
+
+struct PrintStmt : Stmt {
+    Expr* value;
+
+    PrintStmt(Expr* valueP) : value(valueP) {}
+
+    virtual void accept(StmtVisitor& visitor) override { return visitor.visitPrintStmt(*this); };
+};
+
+struct AST {
+    std::vector<Stmt*> stmts;
+};
+
+// For debugging expression syntax trees.
 class ExprPrinter : ExprVisitor {
 private:
     std::string buf;
@@ -82,16 +98,4 @@ public:
     ~ExprPrinter() {}
 
     void print(Expr* expr);
-};
-
-struct Stmt {};
-
-struct PrintStmt : Stmt {
-    Expr* value;
-
-    PrintStmt(Expr* valueP) : value(valueP) {}
-};
-
-struct AST {
-    std::vector<Stmt*> stmts;
 };

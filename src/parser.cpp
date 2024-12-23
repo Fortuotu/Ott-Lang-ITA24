@@ -2,14 +2,6 @@
 
 #include "iostream"
 
-Parser::Parser() {
-
-}
-
-Parser::~Parser() {
-    
-}
-
 AST* Parser::GenerateAST(TokenStream& tokens) {
     Token tok;
 
