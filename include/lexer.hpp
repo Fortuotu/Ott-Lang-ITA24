@@ -17,8 +17,8 @@ private:
 
     int GetNextToken(std::ifstream& input_stream, Token& token);
 public:
-    Lexer();
-    ~Lexer();
+    Lexer() {}
+    ~Lexer() {}
 
     void GenerateTokenStream(std::string filename, TokenStream &token_stream);
 };

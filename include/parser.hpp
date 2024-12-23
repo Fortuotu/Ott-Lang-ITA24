@@ -18,9 +18,14 @@ private:
     Expr* ParseEquality(TokenStream& tokens);
 
     Expr* ParseExpr(TokenStream& tokens);
+
+    Stmt* ParsePrint(TokenStream& tokens);
+
+    Stmt* ParseStmt(TokenStream& tokens);
 public:
     Parser();
     ~Parser();
 
-    ASTNode* GenerateAST(TokenStream& tokens);
+    // parse function
+    AST* GenerateAST(TokenStream& tokens);
 };

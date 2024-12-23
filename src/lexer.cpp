@@ -4,8 +4,9 @@ char GetNextCharacter(std::ifstream& input_stream) {
     char ch = 0;
     
     input_stream.get(ch);
-    if (input_stream.eof())
+    if (input_stream.eof()) {
         return -1;
+    }
 
     return ch;
 }
@@ -20,14 +21,6 @@ char CheckNextCharacter(std::ifstream& input_stream) {
     input_stream.seekg(-1, std::ios::cur);
 
     return ch;
-}
-
-Lexer::Lexer() {
-
-}
-
-Lexer::~Lexer() {
-
 }
 
 void Lexer::GenerateTokenStream(std::string filename, TokenStream& token_stream) {
@@ -61,6 +54,7 @@ inline void Lexer::ParseNextKeyword(std::ifstream& input_stream, Token& token) {
         {"END",      TokenType::END     },
         {"IF",       TokenType::IF      },
         {"RETURN",   TokenType::RETURN  },
+        {"PRINT",    TokenType::PRINT   },
     };
 
     char ch = 0;
@@ -166,7 +160,8 @@ int Lexer::GetNextToken(std::ifstream& input_stream, Token& token) {
 
     while (true) {
         ch = GetNextCharacter(input_stream);
-        if (ch < 0)
+
+        if (ch <= 0)
             break;
 
         if (std::isspace(ch) || ch == '\0')

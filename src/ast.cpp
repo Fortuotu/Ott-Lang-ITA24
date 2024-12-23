@@ -42,7 +42,7 @@ void ExprPrinter::space() {
     buf.push_back(' ');
 }
 
-void ExprPrinter::visitBinaryExpr(BinaryExpr& expr) {
+int ExprPrinter::visitBinaryExpr(BinaryExpr& expr) {
     buf.push_back('(');
     
     expr.left->accept(*this);
@@ -55,15 +55,19 @@ void ExprPrinter::visitBinaryExpr(BinaryExpr& expr) {
     expr.right->accept(*this);
 
     buf.push_back(')');
+
+    return 0;
 }
 
-void ExprPrinter::visitLiteralExpr(LiteralExpr& expr) {
+int ExprPrinter::visitLiteralExpr(LiteralExpr& expr) {
     buf.push_back('(');
     buf.append(std::to_string(expr.val));
     buf.push_back(')');
+
+    return 0;
 }
 
-void ExprPrinter::visitUnaryExpr(UnaryExpr& expr) {
+int ExprPrinter::visitUnaryExpr(UnaryExpr& expr) {
     buf.push_back('(');
 
     token_type_to_str(expr.op, temp);
@@ -72,9 +76,11 @@ void ExprPrinter::visitUnaryExpr(UnaryExpr& expr) {
     expr.operand->accept(*this);
 
     buf.push_back(')');
+
+    return 0;
 }
 
-void ExprPrinter::visitGroupingExpr(GroupingExpr& expr) {
+int ExprPrinter::visitGroupingExpr(GroupingExpr& expr) {
     buf.push_back('(');
 
     buf.append("group ");
@@ -82,6 +88,8 @@ void ExprPrinter::visitGroupingExpr(GroupingExpr& expr) {
     expr.expr->accept(*this);
 
     buf.push_back(')');
+
+    return 0;
 }
 
 void ExprPrinter::print(Expr* expr) {

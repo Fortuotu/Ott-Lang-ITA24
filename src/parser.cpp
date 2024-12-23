@@ -10,8 +10,19 @@ Parser::~Parser() {
     
 }
 
-ASTNode* Parser::GenerateAST(TokenStream& tokens) {
-    return ParseExpr(tokens);
+AST* Parser::GenerateAST(TokenStream& tokens) {
+    Token tok;
+
+    AST* ast = new AST();
+
+    while (true) {
+        tok = tokens.CheckToken();
+        if (tok.type == TokenType::TOKENS_END) {
+            return ast;
+        }
+
+        ast->stmts.push_back(ParseStmt(tokens));
+    }
 }
 
 Expr* Parser::ParseExpr(TokenStream& tokens) {
@@ -123,6 +134,34 @@ Expr* Parser::ParseGrouping(TokenStream& tokens) {
     if (tok.type == TokenType::INT_LITERAL) {
         root = new LiteralExpr(tok.type, std::atoi(tok.value.c_str()));
     }
+
+    return root;
+}
+
+Stmt* Parser::ParseStmt(TokenStream& tokens) {
+    Token tok;
+
+    tok = tokens.CheckToken();
+
+    switch (tok.type) {
+    case TokenType::PRINT:
+        return ParsePrint(tokens);
+    default:
+        break;
+    }
+
+    return nullptr;
+}
+
+Stmt* Parser::ParsePrint(TokenStream& tokens) {
+    Token tok;
+
+    tok = tokens.ConsumeToken(); // Consume 'PRINT' token
+    tok = tokens.ConsumeToken(); // Consume '(' token
+
+    Stmt* root = new PrintStmt(ParseExpr(tokens));
+
+    tok = tokens.ConsumeToken(); // Consume ')' token
 
     return root;
 }

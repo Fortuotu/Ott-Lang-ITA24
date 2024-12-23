@@ -10,6 +10,7 @@ enum class TokenType {
     WHILE,
     END,
     RETURN,
+    PRINT,
 
     IDENTIFIER,
     INT_LITERAL,

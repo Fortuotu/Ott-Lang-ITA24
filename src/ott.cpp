@@ -5,13 +5,14 @@
 int main(void) {
     Lexer lexer;
     Parser parser;
+    ExprPrinter ep;
     
     TokenStream tokens;
     lexer.GenerateTokenStream("../test.ott", tokens);
 
-    ASTNode* root = parser.GenerateAST(tokens);
-    ExprPrinter printer;
-    printer.print((Expr*)root);
+    AST* root = parser.GenerateAST(tokens);
     
+    
+
     return 0;
 }
