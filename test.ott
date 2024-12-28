@@ -1,5 +1,4 @@
 
-VAR a = 100
-VAR b = a
-
-PRINT (a * b)
+THEN
+    VAR l = 25
+END

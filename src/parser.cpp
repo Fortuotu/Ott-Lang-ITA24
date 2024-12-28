@@ -144,6 +144,10 @@ Stmt* Parser::ParseStmt(TokenStream& tokens) {
         return ParseVarDecl(tokens);
     case TokenType::IDENTIFIER:
         return ParseAssign(tokens);
+    case TokenType::THEN:
+        return ParseBlock(tokens);
+    case TokenType::IF:
+        return ParseIf(tokens);
     default:
         break;
     }
@@ -204,4 +208,47 @@ Stmt* Parser::ParseAssign(TokenStream& tokens) {
     root = new AssignStmt(l, r);
 
     return root;
+}
+
+Stmt* Parser::ParseIf(TokenStream& tokens) {
+    Token tok;
+    
+    Stmt* root = nullptr;
+
+    Expr* cond = nullptr;
+    Stmt* stmt = nullptr;
+
+    tok = tokens.ConsumeToken(); // 'IF'
+    tok = tokens.ConsumeToken(); // '('
+
+    cond = ParseExpr(tokens);
+
+    tok = tokens.ConsumeToken(); // ')'
+
+    stmt = ParseStmt(tokens);
+
+    root = new IfStmt(cond, stmt);
+
+    return root;
+}
+
+Stmt* Parser::ParseBlock(TokenStream& tokens) {
+    Token tok;
+
+    Block* blck = new Block();
+
+    tok = tokens.ConsumeToken(); // 'THEN'
+
+    while (true) {
+        tok = tokens.CheckToken();
+        if (tok.type == TokenType::END) {
+            break;
+        }
+        
+        blck->stmts.push_back(ParseStmt(tokens));
+    }
+
+    tok = tokens.ConsumeToken(); // 'END'
+
+    return blck;
 }

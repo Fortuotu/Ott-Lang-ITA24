@@ -5,8 +5,20 @@
 
 #include <unordered_map>
 
+// Compiles the AST to instructions for the stack machine. 
 class Compiler : ExprVisitor, StmtVisitor {
 private:
+    struct Local {
+        int nest = -1;
+        std::string name;
+
+        Local(int nestP, std::string& nameP) : nest(nestP), name(nameP) {}
+    };
+    int getLocalIdx(std::string& name);
+
+    std::vector<Local> locals;
+    int cur_nest = 0;
+
     AST* ast = nullptr;
 
     std::vector<byte> bytes;
@@ -35,6 +47,8 @@ public:
     virtual void visitPrintStmt(PrintStmt& stmt) override;
     virtual void visitAssignStmt(AssignStmt& stmt) override;
     virtual void visitVarDecl(VarDecl& stmt) override;
+    virtual void visitIfStmt(IfStmt& stmt) override;
+    virtual void visitBlock(Block& stmt) override;
 
     void compile(const char* filename);
 };

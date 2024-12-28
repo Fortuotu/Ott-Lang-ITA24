@@ -55,6 +55,7 @@ inline void Lexer::ParseNextKeyword(std::ifstream& input_stream, Token& token) {
         {"IF",       TokenType::IF      },
         {"RETURN",   TokenType::RETURN  },
         {"PRINT",    TokenType::PRINT   },
+        {"THEN",     TokenType::THEN    },
     };
 
     char ch = 0;

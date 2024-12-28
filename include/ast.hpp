@@ -21,6 +21,8 @@ public:
 struct PrintStmt;
 struct VarDecl;
 struct AssignStmt;
+struct Block;
+struct IfStmt;
 
 class StmtVisitor {
 public:
@@ -28,6 +30,8 @@ public:
     virtual void visitPrintStmt(PrintStmt& stmt) = 0;
     virtual void visitVarDecl(VarDecl& stmt) = 0;
     virtual void visitAssignStmt(AssignStmt& stmt) = 0;
+    virtual void visitBlock(Block& stmt) = 0;
+    virtual void visitIfStmt(IfStmt& stmt) = 0;
 };
 
 struct ASTNode {};
@@ -83,6 +87,14 @@ struct Stmt {
     virtual void accept(StmtVisitor& visitor) = 0;
 };
 
+struct Block : Stmt {
+    std::vector<Stmt*> stmts;
+
+    Block() {}
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visitBlock(*this); };    
+};
+
 struct PrintStmt : Stmt {
     Expr* value;
 
@@ -110,6 +122,16 @@ struct AssignStmt : Stmt {
     AssignStmt(std::string& leftP, Expr* rightP) : left(leftP), right(rightP) {}
 
     virtual void accept(StmtVisitor& visitor) override { visitor.visitAssignStmt(*this); };
+};
+
+struct IfStmt : Stmt {
+    Expr* cond;
+    Stmt* stmt;
+
+    IfStmt() {}
+    IfStmt(Expr* condP, Stmt* stmtP) : cond(condP), stmt(stmtP) {}
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visitIfStmt(*this); };
 };
 
 struct AST {

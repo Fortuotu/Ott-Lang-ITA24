@@ -22,10 +22,10 @@ private:
     Stmt* ParsePrint(TokenStream& tokens);
     Stmt* ParseVarDecl(TokenStream& tokens);
     Stmt* ParseAssign(TokenStream& tokens);
+    Stmt* ParseIf(TokenStream& tokens);
+    Stmt* ParseBlock(TokenStream& tokens);
 
     Stmt* ParseStmt(TokenStream& tokens);
-
-    
 public:
     Parser() {}
     ~Parser() {}

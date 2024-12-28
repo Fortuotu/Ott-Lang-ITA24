@@ -10,9 +10,21 @@ enum class Opcode {
     NOT,
 
     LOAD_CONST,
+
     STORE_GLOBAL,
     LOAD_GLOBAL,
+    STORE_LOC,
+    LOAD_LOC,
+
     PRINT,
+
+    JUMP_IFT,
+    JUMP_IFF,
+
+    INC_STACK_PTR,
+    DEC_STACK_PTR,
+
+    EXIT,
 };
 
 using RtVal = int;

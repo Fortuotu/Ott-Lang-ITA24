@@ -11,7 +11,7 @@ int main(void) {
     lexer.GenerateTokenStream("../test.ott", tokens);
 
     AST* root = parser.GenerateAST(tokens);
-    
+
     Compiler comp(root);
     comp.compile("../test.cott");
 

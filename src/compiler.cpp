@@ -61,15 +61,23 @@ void Compiler::visitLiteralExpr(LiteralExpr& expr) {
 }
 
 void Compiler::visitIdfExpr(IdfExpr& expr) {
+    int idx = 0;
+
+    // Identifier is local
+    if ((idx = getLocalIdx(expr.name)) >= 0) {
+        emitOpByte(Opcode::LOAD_LOC);
+        emitByte((byte)idx);
+        return;
+    }
+
+    // Global is not defined
     if (global_tab_entry.count(expr.name) == 0) {
-        // error
         printf("Global not defined\n");
         exit(1);
     }
 
-    emitOpByte(Opcode::LOAD_GLOBAL);
-
     int global_id = global_tab_entry[expr.name];
+    emitOpByte(Opcode::LOAD_GLOBAL);
     emitByte((byte)global_id);
 }
 
@@ -86,7 +94,40 @@ void Compiler::visitPrintStmt(PrintStmt& stmt) {
     emitOpByte(Opcode::PRINT);
 }
 
+int Compiler::getLocalIdx(std::string& name) {
+    for (int i = locals.size() - 1; i >= 0; --i) {
+        if (name.length() == locals[i].name.length() &&
+            name == locals[i].name) {
+            
+            return i;
+        }
+    }
+    return -1;
+}
+
 void Compiler::visitVarDecl(VarDecl& stmt) {
+    int idx = 0;
+
+    // Variable is local and doesn't exist
+    if (cur_nest > 0) {
+        if (getLocalIdx(stmt.identifier) < 0) {
+            locals.push_back(Local(cur_nest, stmt.identifier));
+
+            idx = locals.size() - 1;
+
+            compileExpr(stmt.initializer);
+            emitOpByte(Opcode::STORE_LOC);
+            emitByte((byte)idx);
+
+            return;
+        }
+
+        // Some obscure error idk
+        printf("Some weird error\n");
+        exit(1);
+    }
+
+    // Variable is global and doesn't exist
     if (global_tab_entry.count(stmt.identifier) == 0) {
         global_tab_entry[stmt.identifier] = global_count;
 
@@ -95,22 +136,65 @@ void Compiler::visitVarDecl(VarDecl& stmt) {
         emitByte((byte)global_count);
 
         ++global_count;
+    } else {
+        // Redefinition of variable, do nothing
+        return;
     }
-
-    // Redefinition of variable, do nothing
 }
 
 void Compiler::visitAssignStmt(AssignStmt& stmt) {
+    int idx = 0;
+
+    // Lvalue is local
+    if ((idx = getLocalIdx(stmt.left)) >= 0) {
+        compileExpr(stmt.right);
+        emitOpByte(Opcode::STORE_LOC);
+        emitByte((byte)idx);
+        return;
+    }
+
+    // Lvalue isn't local nor global
     if (global_tab_entry.count(stmt.left) == 0) {
-        // error
-        printf("Identifier doesnt exist.");
+        printf("Identifier doesn't exist.");
         exit(1);
     }
 
-    compileExpr(stmt.right);
+    // Lvalue is global
     emitOpByte(Opcode::STORE_GLOBAL);
     emitByte((byte)global_tab_entry[stmt.left]);
-} 
+}
+
+void Compiler::visitIfStmt(IfStmt& stmt) {
+    int backpatch_idx = 0;
+    int instruction_offset = 0;
+
+    compileExpr(stmt.cond);
+
+    emitOpByte(Opcode::JUMP_IFF);
+    instruction_offset = bytes.size() - 1;
+
+    emitByte((byte)0);
+    backpatch_idx = bytes.size() - 1;
+
+    compileStmt(stmt.stmt);
+
+    bytes[backpatch_idx] = bytes.size() - instruction_offset;
+}
+
+void Compiler::visitBlock(Block& stmt) {
+    ++cur_nest;
+    for (Stmt* st : stmt.stmts) { compileStmt(st); }
+    --cur_nest;
+
+    // Cleanup stack
+    if (cur_nest == 0) {
+        locals.clear();
+        return;
+    }
+    while (locals[locals.size() - 1].nest != cur_nest) {
+        locals.pop_back();
+    }
+}
 
 void Compiler::compileStmt(Stmt* stmt) {
     stmt->accept(*this);
@@ -120,21 +204,21 @@ void Compiler::compile(const char* filename) {
     for (Stmt* stmt : ast->stmts) {
         compileStmt(stmt);
     }
+    emitOpByte(Opcode::EXIT);
 
     std::ofstream f(filename, std::ios::binary);
 
     int temp;
 
+    // Write contents to file
     temp = const_tab.size();
     f.write(reinterpret_cast<const char*>(&temp), sizeof(int));
-
     temp = bytes.size();
     f.write(reinterpret_cast<const char*>(&temp), sizeof(int));
-
     f.write(reinterpret_cast<const char*>(const_tab.data()), const_tab.size() * sizeof(RtVal));
-    
     f.write(reinterpret_cast<const char*>(bytes.data()), bytes.size() * sizeof(byte));
 
+    // Check for errors
     if (!f) {
         std::cerr << "Error writing to file!" << std::endl;
         exit(1);

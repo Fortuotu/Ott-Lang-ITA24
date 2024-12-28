@@ -2,6 +2,8 @@
 
 #include <iostream> 
 
+// See fail on koeravesi, ara seda vaata :)
+
 void token_type_to_str(TokenType tt, std::string& s) {
     s.clear();
     switch (tt)

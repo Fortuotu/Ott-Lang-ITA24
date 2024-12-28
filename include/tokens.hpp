@@ -8,6 +8,7 @@ enum class TokenType {
     FUNCTION,
     IF,
     WHILE,
+    THEN,
     END,
     RETURN,
     PRINT,
