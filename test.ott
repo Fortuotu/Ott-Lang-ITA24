@@ -1,1 +1,5 @@
-PRINT(51 * (2 + 10))
+
+VAR a = 100
+VAR b = a
+
+PRINT (a * b)

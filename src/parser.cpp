@@ -124,7 +124,9 @@ Expr* Parser::ParseGrouping(TokenStream& tokens) {
     }
 
     if (tok.type == TokenType::INT_LITERAL) {
-        root = new LiteralExpr(tok.type, std::atoi(tok.value.c_str()));
+        root = new LiteralExpr(tok.type, tok.value);
+    } else if (tok.type == TokenType::IDENTIFIER) {
+        root = new IdfExpr(tok.value);
     }
 
     return root;
@@ -138,6 +140,10 @@ Stmt* Parser::ParseStmt(TokenStream& tokens) {
     switch (tok.type) {
     case TokenType::PRINT:
         return ParsePrint(tokens);
+    case TokenType::VARIABLE:
+        return ParseVarDecl(tokens);
+    case TokenType::IDENTIFIER:
+        return ParseAssign(tokens);
     default:
         break;
     }
@@ -154,6 +160,48 @@ Stmt* Parser::ParsePrint(TokenStream& tokens) {
     Stmt* root = new PrintStmt(ParseExpr(tokens));
 
     tok = tokens.ConsumeToken(); // Consume ')' token
+
+    return root;
+}
+
+Stmt* Parser::ParseVarDecl(TokenStream& tokens) {
+    Token tok;
+
+    Stmt* root = nullptr;
+
+    std::string idf;
+    Expr* ini = nullptr;
+
+    tok = tokens.ConsumeToken(); // Consume 'VAR' token
+    tok = tokens.ConsumeToken(); // Consume IDENTIFIER
+
+    idf = tok.value;
+
+    tok = tokens.ConsumeToken(); // Consume '=' token
+    
+    ini = ParseExpr(tokens); // Consume expression
+
+    root = new VarDecl(idf, ini);
+
+    return root;
+}
+
+Stmt* Parser::ParseAssign(TokenStream& tokens) {
+    Token tok;
+
+    Stmt* root = nullptr;
+
+    std::string l;
+    Expr* r = nullptr;
+
+    tok = tokens.ConsumeToken(); // IDENTIFIER
+    l = tok.value;
+
+    tok = tokens.ConsumeToken(); // =
+
+    r = ParseExpr(tokens);
+
+    root = new AssignStmt(l, r);
 
     return root;
 }

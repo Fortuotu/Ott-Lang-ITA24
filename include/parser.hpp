@@ -20,8 +20,12 @@ private:
     Expr* ParseExpr(TokenStream& tokens);
 
     Stmt* ParsePrint(TokenStream& tokens);
+    Stmt* ParseVarDecl(TokenStream& tokens);
+    Stmt* ParseAssign(TokenStream& tokens);
 
     Stmt* ParseStmt(TokenStream& tokens);
+
+    
 public:
     Parser() {}
     ~Parser() {}

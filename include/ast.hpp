@@ -6,28 +6,34 @@ struct UnaryExpr;
 struct BinaryExpr;
 struct LiteralExpr;
 struct GroupingExpr;
+struct IdfExpr;
 
 class ExprVisitor {
 public:
     virtual ~ExprVisitor() = default;
-    virtual int visitUnaryExpr(UnaryExpr& expr) = 0;
-    virtual int visitBinaryExpr(BinaryExpr& expr) = 0;
-    virtual int visitLiteralExpr(LiteralExpr& expr) = 0;
-    virtual int visitGroupingExpr(GroupingExpr& expr) = 0;
+    virtual void visitUnaryExpr(UnaryExpr& expr) = 0;
+    virtual void visitBinaryExpr(BinaryExpr& expr) = 0;
+    virtual void visitLiteralExpr(LiteralExpr& expr) = 0;
+    virtual void visitIdfExpr(IdfExpr& expr) = 0;
+    virtual void visitGroupingExpr(GroupingExpr& expr) = 0;
 };
 
 struct PrintStmt;
+struct VarDecl;
+struct AssignStmt;
 
 class StmtVisitor {
 public:
     virtual ~StmtVisitor() = default;
     virtual void visitPrintStmt(PrintStmt& stmt) = 0;
+    virtual void visitVarDecl(VarDecl& stmt) = 0;
+    virtual void visitAssignStmt(AssignStmt& stmt) = 0;
 };
 
 struct ASTNode {};
 
 struct Expr : ASTNode {
-    virtual int accept(ExprVisitor& visitor) = 0;
+    virtual void accept(ExprVisitor& visitor) = 0;
 };
 
 struct UnaryExpr : Expr {
@@ -36,7 +42,7 @@ struct UnaryExpr : Expr {
 
     UnaryExpr(TokenType opP, Expr *operandP) : op(opP), operand(operandP) {}
 
-    virtual int accept(ExprVisitor& visitor) override { return visitor.visitUnaryExpr(*this); }
+    virtual void accept(ExprVisitor& visitor) override { visitor.visitUnaryExpr(*this); }
 };
 
 struct BinaryExpr : Expr {
@@ -45,16 +51,24 @@ struct BinaryExpr : Expr {
 
     BinaryExpr(TokenType opP, Expr *leftP, Expr *rightP) : op(opP), left(leftP), right(rightP) {}
 
-    virtual int accept(ExprVisitor& visitor) override { return visitor.visitBinaryExpr(*this); };
+    virtual void accept(ExprVisitor& visitor) override { visitor.visitBinaryExpr(*this); };
 };
 
 struct LiteralExpr : Expr {
     TokenType type;
-    int val;
+    std::string val;
 
-    LiteralExpr(TokenType typeP, int valP) : type(typeP), val(valP) {}
+    LiteralExpr(TokenType typeP, std::string& valP) : type(typeP), val(valP) {}
 
-    virtual int accept(ExprVisitor& visitor) override { return visitor.visitLiteralExpr(*this); };
+    virtual void accept(ExprVisitor& visitor) override { visitor.visitLiteralExpr(*this); };
+};
+
+struct IdfExpr : Expr {
+    std::string name;
+
+    IdfExpr(std::string& nameP) : name(nameP) {}
+
+    virtual void accept(ExprVisitor& visitor) override { visitor.visitIdfExpr(*this); };
 };
 
 struct GroupingExpr : Expr {
@@ -62,7 +76,7 @@ struct GroupingExpr : Expr {
 
     GroupingExpr(Expr* exprP) : expr(exprP) {}
 
-    virtual int accept(ExprVisitor& visitor) override { return visitor.visitGroupingExpr(*this); };
+    virtual void accept(ExprVisitor& visitor) override { visitor.visitGroupingExpr(*this); };
 };
 
 struct Stmt {
@@ -74,7 +88,28 @@ struct PrintStmt : Stmt {
 
     PrintStmt(Expr* valueP) : value(valueP) {}
 
-    virtual void accept(StmtVisitor& visitor) override { return visitor.visitPrintStmt(*this); };
+    virtual void accept(StmtVisitor& visitor) override { visitor.visitPrintStmt(*this); };
+};
+
+struct VarDecl : Stmt {
+    std::string identifier;
+
+    Expr* initializer;
+
+    VarDecl() {}
+    VarDecl(std::string& identifierP, Expr* initializerP) : identifier(identifierP), initializer(initializerP) {}
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visitVarDecl(*this); };
+};
+
+struct AssignStmt : Stmt {
+    std::string left;
+    Expr* right;
+
+    AssignStmt() {}
+    AssignStmt(std::string& leftP, Expr* rightP) : left(leftP), right(rightP) {}
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visitAssignStmt(*this); };
 };
 
 struct AST {
@@ -89,10 +124,10 @@ private:
     
     void space();
 public:
-    virtual int visitUnaryExpr(UnaryExpr& expr) override;
-    virtual int visitBinaryExpr(BinaryExpr& expr) override;
-    virtual int visitLiteralExpr(LiteralExpr& expr) override;
-    virtual int visitGroupingExpr(GroupingExpr& expr) override;
+    virtual void visitUnaryExpr(UnaryExpr& expr) override;
+    virtual void visitBinaryExpr(BinaryExpr& expr) override;
+    virtual void visitLiteralExpr(LiteralExpr& expr) override;
+    virtual void visitGroupingExpr(GroupingExpr& expr) override;
 
     ExprPrinter() {}
     ~ExprPrinter() {}

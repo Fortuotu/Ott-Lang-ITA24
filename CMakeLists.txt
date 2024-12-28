@@ -16,6 +16,8 @@ add_subdirectory(src)
 
 # Define the executable in the root directory
 add_executable(ott src/ott.cpp)
+add_executable(ottd src/ottd.cpp)
 
 # Link the compiled libraries (lexer, tokens) to the executable
-target_link_libraries(ott lexer tokens parser ast runtime)
+target_link_libraries(ott lexer tokens parser ast compiler)
+target_link_libraries(ottd lexer tokens parser ast compiler)
