@@ -24,6 +24,7 @@ private:
     Stmt* ParseAssign(TokenStream& tokens);
     Stmt* ParseIf(TokenStream& tokens);
     Stmt* ParseBlock(TokenStream& tokens);
+    Stmt* ParseFuncDecl(TokenStream& tokens);
 
     Stmt* ParseStmt(TokenStream& tokens);
 public:

@@ -23,6 +23,7 @@ struct VarDecl;
 struct AssignStmt;
 struct Block;
 struct IfStmt;
+struct FuncDecl;
 
 class StmtVisitor {
 public:
@@ -32,6 +33,7 @@ public:
     virtual void visitAssignStmt(AssignStmt& stmt) = 0;
     virtual void visitBlock(Block& stmt) = 0;
     virtual void visitIfStmt(IfStmt& stmt) = 0;
+    virtual void visitFuncDecl(FuncDecl& stmt) = 0;
 };
 
 struct ASTNode {};
@@ -85,6 +87,16 @@ struct GroupingExpr : Expr {
 
 struct Stmt {
     virtual void accept(StmtVisitor& visitor) = 0;
+};
+
+struct FuncDecl : Stmt {
+    std::string name;
+    int arg_count = 0;
+    Stmt* body = nullptr;
+
+    FuncDecl() {}
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visitFuncDecl(*this); }
 };
 
 struct Block : Stmt {

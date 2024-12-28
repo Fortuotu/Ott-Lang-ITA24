@@ -49,6 +49,7 @@ public:
     virtual void visitVarDecl(VarDecl& stmt) override;
     virtual void visitIfStmt(IfStmt& stmt) override;
     virtual void visitBlock(Block& stmt) override;
+    virtual void visitFuncDecl(FuncDecl& stmt) override;
 
     void compile(const char* filename);
 };

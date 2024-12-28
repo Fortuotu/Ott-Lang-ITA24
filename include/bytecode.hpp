@@ -21,8 +21,7 @@ enum class Opcode {
     JUMP_IFT,
     JUMP_IFF,
 
-    INC_STACK_PTR,
-    DEC_STACK_PTR,
+    CALL,
 
     EXIT,
 };

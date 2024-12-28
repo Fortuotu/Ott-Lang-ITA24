@@ -142,6 +142,10 @@ void Compiler::visitVarDecl(VarDecl& stmt) {
     }
 }
 
+void Compiler::visitFuncDecl(FuncDecl& stmt) {
+
+}
+
 void Compiler::visitAssignStmt(AssignStmt& stmt) {
     int idx = 0;
 

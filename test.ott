@@ -1,4 +1,8 @@
 
-THEN
-    VAR l = 25
+VAR a = 10
+VAR b = a * 9
+
+IF (a + b) THEN
+    VAR c = a + b
+    PRINT (c)
 END

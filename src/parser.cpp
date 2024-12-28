@@ -252,3 +252,46 @@ Stmt* Parser::ParseBlock(TokenStream& tokens) {
 
     return blck;
 }
+
+Stmt* Parser::ParseFuncDecl(TokenStream& tokens) {
+    Token tok;
+
+    FuncDecl* fn = new FuncDecl();
+    fn->arg_count = 0;
+
+    tok = tokens.ConsumeToken(); // 'FUNC'
+    tok = tokens.ConsumeToken(); // IDENTIFIER
+
+    fn->name = tok.value;
+
+    tok = tokens.ConsumeToken(); // '('
+
+    while (true) {
+        tok = tokens.CheckToken();
+        if (tok.type == TokenType::VARIABLE) {
+            tok = tokens.ConsumeToken();
+            tok = tokens.CheckToken();
+
+            fn->arg_count++;
+
+            if (tok.type == TokenType::COMMA) {
+                continue;
+            } else if (tok.type == TokenType::CLOSE_PARENTHESES) {
+                break;
+            }
+        } else if (tok.type == TokenType::CLOSE_PARENTHESES) {
+            break;
+        }
+    }
+
+    tok = tokens.ConsumeToken(); // ')'
+
+    tok = tokens.CheckToken();
+    if (tok.type != TokenType::THEN) {
+        printf("Expected block scope\n");
+        exit(1);
+    }
+    fn->body = ParseBlock(tokens);
+
+    return fn;
+}
