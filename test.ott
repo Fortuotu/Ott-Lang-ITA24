@@ -1,8 +1,4 @@
 
-VAR a = 10
-VAR b = a * 9
+FUNCTION add(VAR a, VAR b) THEN
 
-IF (a + b) THEN
-    VAR c = a + b
-    PRINT (c)
 END

@@ -140,7 +140,7 @@ Stmt* Parser::ParseStmt(TokenStream& tokens) {
     switch (tok.type) {
     case TokenType::PRINT:
         return ParsePrint(tokens);
-    case TokenType::VARIABLE:
+    case TokenType::VAR:
         return ParseVarDecl(tokens);
     case TokenType::IDENTIFIER:
         return ParseAssign(tokens);
@@ -148,6 +148,8 @@ Stmt* Parser::ParseStmt(TokenStream& tokens) {
         return ParseBlock(tokens);
     case TokenType::IF:
         return ParseIf(tokens);
+    case TokenType::FUNCTION:
+        return ParseFuncDecl(tokens);
     default:
         break;
     }
@@ -168,26 +170,29 @@ Stmt* Parser::ParsePrint(TokenStream& tokens) {
     return root;
 }
 
+static VarDecl* ParseVar(TokenStream& tokens) {
+    Token tok;
+
+    VarDecl* var = new VarDecl();
+
+    tok = tokens.ConsumeToken(); // Consume 'VAR' token
+
+    tok = tokens.ConsumeToken(); // Consume IDENTIFIER
+    var->identifier = tok.value;
+
+    return var;
+}
+
 Stmt* Parser::ParseVarDecl(TokenStream& tokens) {
     Token tok;
 
-    Stmt* root = nullptr;
-
-    std::string idf;
-    Expr* ini = nullptr;
-
-    tok = tokens.ConsumeToken(); // Consume 'VAR' token
-    tok = tokens.ConsumeToken(); // Consume IDENTIFIER
-
-    idf = tok.value;
+    VarDecl* var_decl = ParseVar(tokens);
 
     tok = tokens.ConsumeToken(); // Consume '=' token
-    
-    ini = ParseExpr(tokens); // Consume expression
 
-    root = new VarDecl(idf, ini);
+    var_decl->initializer = ParseExpr(tokens); // Consume expression
 
-    return root;
+    return var_decl;
 }
 
 Stmt* Parser::ParseAssign(TokenStream& tokens) {
@@ -257,9 +262,9 @@ Stmt* Parser::ParseFuncDecl(TokenStream& tokens) {
     Token tok;
 
     FuncDecl* fn = new FuncDecl();
-    fn->arg_count = 0;
 
-    tok = tokens.ConsumeToken(); // 'FUNC'
+    tok = tokens.ConsumeToken(); // 'FUNCTION'
+
     tok = tokens.ConsumeToken(); // IDENTIFIER
 
     fn->name = tok.value;
@@ -268,20 +273,21 @@ Stmt* Parser::ParseFuncDecl(TokenStream& tokens) {
 
     while (true) {
         tok = tokens.CheckToken();
-        if (tok.type == TokenType::VARIABLE) {
-            tok = tokens.ConsumeToken();
+
+        if (tok.type == TokenType::VAR) {
+            fn->args.push_back(ParseVar(tokens));
+
             tok = tokens.CheckToken();
 
-            fn->arg_count++;
-
             if (tok.type == TokenType::COMMA) {
+                tok = tokens.ConsumeToken(); // ','
                 continue;
             } else if (tok.type == TokenType::CLOSE_PARENTHESES) {
                 break;
             }
         } else if (tok.type == TokenType::CLOSE_PARENTHESES) {
             break;
-        }
+        } else break;
     }
 
     tok = tokens.ConsumeToken(); // ')'

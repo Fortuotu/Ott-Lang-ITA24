@@ -50,12 +50,12 @@ void Lexer::GenerateTokenStream(std::string filename, TokenStream& token_stream)
 inline void Lexer::ParseNextKeyword(std::ifstream& input_stream, Token& token) {
     static std::unordered_map<std::string, TokenType> keywords = {
         {"FUNCTION", TokenType::FUNCTION},
-        {"VARIABLE", TokenType::VARIABLE},
+        {"VAR",      TokenType::VAR     },
         {"END",      TokenType::END     },
         {"IF",       TokenType::IF      },
         {"RETURN",   TokenType::RETURN  },
         {"PRINT",    TokenType::PRINT   },
-        {"THEN",     TokenType::THEN    },
+        {"THEN",     TokenType::THEN    }
     };
 
     char ch = 0;

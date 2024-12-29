@@ -4,7 +4,7 @@
 #include <string>
 
 enum class TokenType {
-    VARIABLE,
+    VAR,
     FUNCTION,
     IF,
     WHILE,

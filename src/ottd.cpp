@@ -137,8 +137,8 @@ int main(int argc, char* argv[]) {
     unsigned int code_size = (unsigned int)bytes[4];
 
     printf("HEADER:\n");
-    printf("    CONST_TABLE_SIZE: %d entries\n", const_table_size);
-    printf("    CODE_SIZE: %d bytes\n", code_size);
+    printf("    CONST_TABLE_SIZE: %ld bytes\n", const_table_size * sizeof(RtVal));
+    printf("    CODE_SIZE: %ld bytes\n", code_size * sizeof(byte));
 
     printf("\n");
 

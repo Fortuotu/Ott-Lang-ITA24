@@ -91,7 +91,7 @@ struct Stmt {
 
 struct FuncDecl : Stmt {
     std::string name;
-    int arg_count = 0;
+    std::vector<VarDecl*> args;
     Stmt* body = nullptr;
 
     FuncDecl() {}

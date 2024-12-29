@@ -16,16 +16,16 @@ private:
     };
     int getLocalIdx(std::string& name);
 
-    std::vector<Local> locals;
+    std::vector<Local> locals__;
+    std::vector<Local> func_locals__;
+    std::vector<Local>* locals = &locals__;
     int cur_nest = 0;
 
     AST* ast = nullptr;
-
     std::vector<byte> bytes;
 
     std::vector<RtVal> const_tab;
     std::unordered_map<std::string, int> const_tab_entry;
-    
     int global_count = 0;
     std::unordered_map<std::string, int> global_tab_entry;
 

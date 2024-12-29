@@ -95,9 +95,9 @@ void Compiler::visitPrintStmt(PrintStmt& stmt) {
 }
 
 int Compiler::getLocalIdx(std::string& name) {
-    for (int i = locals.size() - 1; i >= 0; --i) {
-        if (name.length() == locals[i].name.length() &&
-            name == locals[i].name) {
+    for (int i = locals->size() - 1; i >= 0; --i) {
+        if (name.length() == locals->at(i).name.length() &&
+            name == locals->at(i).name) {
             
             return i;
         }
@@ -111,9 +111,9 @@ void Compiler::visitVarDecl(VarDecl& stmt) {
     // Variable is local and doesn't exist
     if (cur_nest > 0) {
         if (getLocalIdx(stmt.identifier) < 0) {
-            locals.push_back(Local(cur_nest, stmt.identifier));
+            locals->push_back(Local(cur_nest, stmt.identifier));
 
-            idx = locals.size() - 1;
+            idx = locals->size() - 1;
 
             compileExpr(stmt.initializer);
             emitOpByte(Opcode::STORE_LOC);
@@ -143,7 +143,7 @@ void Compiler::visitVarDecl(VarDecl& stmt) {
 }
 
 void Compiler::visitFuncDecl(FuncDecl& stmt) {
-
+    printf("Saw function decl!\n");
 }
 
 void Compiler::visitAssignStmt(AssignStmt& stmt) {
@@ -192,11 +192,11 @@ void Compiler::visitBlock(Block& stmt) {
 
     // Cleanup stack
     if (cur_nest == 0) {
-        locals.clear();
+        locals->clear();
         return;
     }
-    while (locals[locals.size() - 1].nest != cur_nest) {
-        locals.pop_back();
+    while (locals->at(locals->size() - 1).nest != cur_nest) {
+        locals->pop_back();
     }
 }
 
