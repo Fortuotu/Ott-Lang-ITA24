@@ -49,15 +49,16 @@ struct Token {
 
 class TokenStream {
 private:
-    std::vector<Token> tokens_;
-    size_t selector_ = 0;
-
     Token end_token_;
 public:
+    std::vector<Token> tokens_;
+    size_t selector_ = 0;
+    
     TokenStream();
 
     std::vector<Token>& InternalVector();
 
+    Token Previous();
     Token ConsumeToken();
     Token ValidateToken(TokenType tt);
     Token CheckToken();

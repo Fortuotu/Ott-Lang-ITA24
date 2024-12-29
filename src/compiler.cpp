@@ -81,6 +81,19 @@ void Compiler::visitIdfExpr(IdfExpr& expr) {
     emitByte((byte)global_id);
 }
 
+void Compiler::visitCallExpr(CallExprStmt& expr) {
+    printf("Got to CallExprStmt visit! args: %lu\n", expr.args.size());
+
+    for (Expr* arg : expr.args) {
+        printf("%p\n", arg);
+        //compileExpr(arg);
+    }
+}
+
+void Compiler::visitCallStmt(CallExprStmt& expr) {
+    visitCallExpr(expr);
+}
+
 void Compiler::visitGroupingExpr(GroupingExpr& expr) {
     compileExpr(expr.expr);
 }
@@ -143,7 +156,8 @@ void Compiler::visitVarDecl(VarDecl& stmt) {
 }
 
 void Compiler::visitFuncDecl(FuncDecl& stmt) {
-    printf("Saw function decl!\n");
+    // Record the existense of this function, the compiling will be done later
+    func_refs.push_back(&stmt);    
 }
 
 void Compiler::visitAssignStmt(AssignStmt& stmt) {

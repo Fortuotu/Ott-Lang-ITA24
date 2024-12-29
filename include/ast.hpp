@@ -2,6 +2,8 @@
 
 #include "tokens.hpp"
 
+struct CallExprStmt;
+
 struct UnaryExpr;
 struct BinaryExpr;
 struct LiteralExpr;
@@ -16,6 +18,7 @@ public:
     virtual void visitLiteralExpr(LiteralExpr& expr) = 0;
     virtual void visitIdfExpr(IdfExpr& expr) = 0;
     virtual void visitGroupingExpr(GroupingExpr& expr) = 0;
+    virtual void visitCallExpr(CallExprStmt& expr) = 0;
 };
 
 struct PrintStmt;
@@ -34,6 +37,7 @@ public:
     virtual void visitBlock(Block& stmt) = 0;
     virtual void visitIfStmt(IfStmt& stmt) = 0;
     virtual void visitFuncDecl(FuncDecl& stmt) = 0;
+    virtual void visitCallStmt(CallExprStmt& expr) = 0;
 };
 
 struct ASTNode {};
@@ -91,7 +95,7 @@ struct Stmt {
 
 struct FuncDecl : Stmt {
     std::string name;
-    std::vector<VarDecl*> args;
+    std::vector<VarDecl*> params;
     Stmt* body = nullptr;
 
     FuncDecl() {}
@@ -144,6 +148,14 @@ struct IfStmt : Stmt {
     IfStmt(Expr* condP, Stmt* stmtP) : cond(condP), stmt(stmtP) {}
 
     virtual void accept(StmtVisitor& visitor) override { visitor.visitIfStmt(*this); };
+};
+
+struct CallExprStmt : Expr, Stmt {
+    std::string calle_idf;
+    std::vector<Expr*> args;
+
+    virtual void accept(ExprVisitor& visitor) override { visitor.visitCallExpr(*this); };
+    virtual void accept(StmtVisitor& visitor) override { visitor.visitCallStmt(*this); };
 };
 
 struct AST {

@@ -1,4 +1,1 @@
-
-FUNCTION add(VAR a, VAR b) THEN
-
-END
+add(1)

@@ -21,6 +21,8 @@ private:
     std::vector<Local>* locals = &locals__;
     int cur_nest = 0;
 
+    std::vector<FuncDecl*> func_refs;
+
     AST* ast = nullptr;
     std::vector<byte> bytes;
 
@@ -34,6 +36,8 @@ private:
 
     void emitOpByte(Opcode op);
     void emitByte(byte b);
+
+    void scanFunctionDecls();
 public:
     Compiler(AST* astP) : ast(astP) {}
     ~Compiler() {}
@@ -43,6 +47,7 @@ public:
     virtual void visitLiteralExpr(LiteralExpr& expr) override;
     virtual void visitGroupingExpr(GroupingExpr& expr) override;
     virtual void visitIdfExpr(IdfExpr& expr) override;
+    virtual void visitCallExpr(CallExprStmt& expr) override;
 
     virtual void visitPrintStmt(PrintStmt& stmt) override;
     virtual void visitAssignStmt(AssignStmt& stmt) override;
@@ -50,6 +55,7 @@ public:
     virtual void visitIfStmt(IfStmt& stmt) override;
     virtual void visitBlock(Block& stmt) override;
     virtual void visitFuncDecl(FuncDecl& stmt) override;
+    virtual void visitCallStmt(CallExprStmt& expr) override;
 
     void compile(const char* filename);
 };

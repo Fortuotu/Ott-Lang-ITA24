@@ -1,5 +1,5 @@
 #include "parser.hpp"
-
+#include "debug.hpp"
 #include "iostream"
 
 AST* Parser::GenerateAST(TokenStream& tokens) {
@@ -109,14 +109,15 @@ Expr* Parser::ParseGrouping(TokenStream& tokens) {
 
     Expr* root = nullptr;
 
-    tok = tokens.ConsumeToken();
+    tok = tokens.CheckToken();
 
     if (tok.type == TokenType::OPEN_PARENTHESES) {
+        tokens.ConsumeToken();
+
         root = new GroupingExpr(ParseExpr(tokens));
 
         tok = tokens.ConsumeToken();
         if (tok.type != TokenType::CLOSE_PARENTHESES) {
-            // error
             std::cout << "Expected closing parentheses\n";
             exit(1);
         }
@@ -124,10 +125,56 @@ Expr* Parser::ParseGrouping(TokenStream& tokens) {
     }
 
     if (tok.type == TokenType::INT_LITERAL) {
+        tokens.ConsumeToken();
         root = new LiteralExpr(tok.type, tok.value);
     } else if (tok.type == TokenType::IDENTIFIER) {
-        root = new IdfExpr(tok.value);
+        root = ParseIdf(tokens);
     }
+
+    return root;
+}
+
+void Parser::ParseFuncCallArgs(TokenStream& tokens, CallExprStmt* call) {
+    Token tok;
+
+    tokens.ConsumeToken(); // '('
+
+    while (true) {
+        tok = tokens.CheckToken();
+        if (tok.type != TokenType::CLOSE_PARENTHESES) {
+            call->args.push_back(ParseExpr(tokens));
+            
+            tok = tokens.CheckToken();
+            if (tok.type == TokenType::COMMA) {
+                tokens.ConsumeToken(); // ','
+                continue;
+            }
+
+            break;
+        } else {
+            break;
+        }
+    }
+
+    tokens.ConsumeToken(); // ')'
+}
+
+Expr* Parser::ParseIdf(TokenStream& tokens) {
+    Token tok;
+
+    tok = tokens.ConsumeToken(); // IDENTIFIER
+    std::string name = tok.value;
+
+    // Is just a identifier
+    tok = tokens.CheckToken();
+    if (tok.type != TokenType::OPEN_PARENTHESES) {
+        return new IdfExpr(name);
+    }
+
+    CallExprStmt* root = new CallExprStmt();
+    root->calle_idf = name;
+
+    ParseFuncCallArgs(tokens, root);
 
     return root;
 }
@@ -143,7 +190,7 @@ Stmt* Parser::ParseStmt(TokenStream& tokens) {
     case TokenType::VAR:
         return ParseVarDecl(tokens);
     case TokenType::IDENTIFIER:
-        return ParseAssign(tokens);
+        return ParseIdfStmt(tokens);
     case TokenType::THEN:
         return ParseBlock(tokens);
     case TokenType::IF:
@@ -154,6 +201,32 @@ Stmt* Parser::ParseStmt(TokenStream& tokens) {
         break;
     }
 
+    return nullptr;
+}
+
+Stmt* Parser::ParseIdfStmt(TokenStream& tokens) {
+    Token tok;
+
+    tok = tokens.ConsumeToken(); // IDENTIFIER
+    std::string idf = tok.value;
+
+    tok = tokens.CheckToken();
+
+    // Function call statement
+    if (tok.type == TokenType::OPEN_PARENTHESES) {
+        auto root = new CallExprStmt();
+        
+        root->calle_idf = idf;
+        ParseFuncCallArgs(tokens, root);
+
+        return root;
+    } else if (tok.type == TokenType::ASSIGN) {
+        auto root = ParseAssign(tokens);
+
+        return root;
+    }
+
+    printf("HELLO!4\n");
     return nullptr;
 }
 
@@ -203,7 +276,7 @@ Stmt* Parser::ParseAssign(TokenStream& tokens) {
     std::string l;
     Expr* r = nullptr;
 
-    tok = tokens.ConsumeToken(); // IDENTIFIER
+    tok = tokens.Previous(); // IDENTIFIER
     l = tok.value;
 
     tok = tokens.ConsumeToken(); // =
@@ -266,7 +339,6 @@ Stmt* Parser::ParseFuncDecl(TokenStream& tokens) {
     tok = tokens.ConsumeToken(); // 'FUNCTION'
 
     tok = tokens.ConsumeToken(); // IDENTIFIER
-
     fn->name = tok.value;
 
     tok = tokens.ConsumeToken(); // '('
@@ -275,7 +347,7 @@ Stmt* Parser::ParseFuncDecl(TokenStream& tokens) {
         tok = tokens.CheckToken();
 
         if (tok.type == TokenType::VAR) {
-            fn->args.push_back(ParseVar(tokens));
+            fn->params.push_back(ParseVar(tokens));
 
             tok = tokens.CheckToken();
 

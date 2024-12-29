@@ -8,6 +8,7 @@
 #include "tokens.hpp"
 #include "ast.hpp"
 
+// Creates the AST from tokens.
 class Parser {
 private:
     Expr* ParseGrouping(TokenStream& tokens);
@@ -16,6 +17,7 @@ private:
     Expr* ParseTerm(TokenStream& tokens);
     Expr* ParseCondition(TokenStream& tokens);
     Expr* ParseEquality(TokenStream& tokens);
+    Expr* ParseIdf(TokenStream& tokens);
 
     Expr* ParseExpr(TokenStream& tokens);
 
@@ -25,8 +27,11 @@ private:
     Stmt* ParseIf(TokenStream& tokens);
     Stmt* ParseBlock(TokenStream& tokens);
     Stmt* ParseFuncDecl(TokenStream& tokens);
+    Stmt* ParseIdfStmt(TokenStream& tokens);
 
     Stmt* ParseStmt(TokenStream& tokens);
+
+    void ParseFuncCallArgs(TokenStream& tokens, CallExprStmt* call);
 public:
     Parser() {}
     ~Parser() {}

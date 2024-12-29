@@ -26,6 +26,14 @@ Token TokenStream::ValidateToken(TokenType tt) {
     return t;
 }
 
+Token TokenStream::Previous() {
+    if (selector_ <= 0 || selector_ >= tokens_.size()) {
+        return end_token_;
+    }
+
+    return tokens_[selector_];
+}
+
 Token TokenStream::CheckToken() {
     if (selector_ >= tokens_.size()) {
         return end_token_;
