@@ -1,1 +1,26 @@
-add(1)
+
+frame_count = 0
+
+function start_frame() {
+    if (frame_count >= 1000) {
+        frame_count = 0
+    }
+
+    frame_count += 1
+}
+
+function start_game() {
+    running = true
+    
+    while (running) {
+        start_frame()
+
+        print(frame_count)
+    }
+
+    return 
+}
+
+function entry() {
+    start_game()
+}
