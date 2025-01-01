@@ -11,8 +11,9 @@ function start_frame() {
 
 function start_game() {
     running = true
-    
-    while (running) {
+    quit = false
+
+    while (running != false and quit == false) {
         start_frame()
 
         print(frame_count)

@@ -11,9 +11,17 @@ enum class TokenType {
     OP_SUB,
     OP_MUL,
     OP_DIV,
-    OP_EQUAL,
-    OP_NOT_EQUAL,
+    OP_EQUALS,
+    OP_NOT_EQUALS,
+    OP_GREATER,
+    OP_LESS,
+    OP_GREATER_EQUALS,
+    OP_LESS_EQUALS,
+    OP_ASSIGN,
+
     OP_NOT,
+    OP_AND,
+    OP_OR,
 
     IDENTIFIER,
     INT_LITERAL,
@@ -30,6 +38,7 @@ struct Token {
     std::string val;
 
     Token() : type(TokenType::NO_TYPE) {}
+    Token(TokenType type, std::string val) : type(type), val(val) {}
     Token(Token&& other) noexcept : type(std::exchange(other.type, TokenType::NO_TYPE)), val(std::move(other.val)) {}
 
     Token& operator=(Token& other) noexcept {

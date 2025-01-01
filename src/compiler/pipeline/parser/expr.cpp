@@ -7,7 +7,7 @@ Expr* Parser::expr() {
 Expr* Parser::expr_equality() {
     Expr* root = expr_term();
 
-    if (consumer.validate({TokenType::OP_EQUAL, TokenType::OP_NOT_EQUAL})) {
+    if (consumer.validate({TokenType::OP_EQUALS, TokenType::OP_NOT_EQUALS})) {
         root = new BinaryExpr(consumer.get_type(), root, expr_equality());
     }
 

@@ -4,8 +4,18 @@
 int main(void) {
     Scanner scanner;
 
-    std::string filename = "/Users/ott/Downloads/Ott-Lang-ITA24/test.oer";
+    std::string filename = "/Users/ott/Downloads/Ott-Lang-ITA24/test.ott";
     std::queue<Token> tokens = scanner.tokenize(filename);
+
+    
+    Token token;
+    while (tokens.size() > 0) {
+        token = tokens.front();
+        tokens.pop();
+
+        std::cout << token.val << '\n';
+    }
+    
 
     Parser parser(tokens);
 
