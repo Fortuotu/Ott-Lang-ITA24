@@ -45,13 +45,14 @@ FuncDecl* Parser::parse_func_decl() {
 
     if (!consumer.match({TokenType::OPEN_PARENTH})) { return nullptr; }
 
-    while (consumer.match({TokenType::IDENTIFIER})) {
+    if (consumer.match({TokenType::IDENTIFIER})) {
         decl->params.push_back(consumer.get());
 
-        if (!consumer.match({TokenType::COMMA})) { break; }
-
-        consumer.check();
-        if (consumer.get_type() != TokenType::COMMA) { return nullptr; }
+        while (consumer.match({TokenType::COMMA})) {
+            if (!consumer.match({TokenType::IDENTIFIER})) { return nullptr; }
+ 
+            decl->params.push_back(consumer.get());
+        }
     }
 
     if (!consumer.match({TokenType::CLOSE_PARENTH})) { return nullptr; }

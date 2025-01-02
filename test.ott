@@ -1,14 +1,5 @@
 
-function some_func_1() {
-    if (10 >= 20) {
-        
-    }
-}
 
-function sigma_boy(a) {
-
-}
-
-function some_func_2() {
+function some_func(arg1, arg2, arg3) {
 
 }
