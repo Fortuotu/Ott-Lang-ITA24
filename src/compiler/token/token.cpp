@@ -19,7 +19,7 @@ void TokenConsumer::check() {
     active_token = tokens.front();
 }
 
-bool TokenConsumer::validate(std::initializer_list<TokenType> accepted_types) {
+bool TokenConsumer::match(std::initializer_list<TokenType> accepted_types) {
     if (out_of_tokens()) {
         active_token = Token();
 

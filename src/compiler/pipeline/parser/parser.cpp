@@ -1,15 +1,18 @@
 #include "compiler/pipeline/parser/parser.hpp"
 
 AST* Parser::parse() {
-    Decl* node = nullptr;
+    AST* ast = new AST();
 
-    while ((node = parse_decl()) != nullptr) {
-        ast->decls.push_back(node);
-    }
+    Stmt* decl = nullptr;
 
-    if (!consumer.out_of_tokens()) {
-        std::cout << "Only declarations allowed in top level of script.\n";
-        std::exit(EXIT_FAILURE);
+    while (!consumer.out_of_tokens()) {
+        decl = parse_decl();
+        if (!decl) {
+            std::cout << "Some error idk.\n";
+            std::exit(EXIT_FAILURE);
+        }
+
+        ast->decls.push_back(decl);
     }
 
     return ast;

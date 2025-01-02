@@ -114,6 +114,9 @@ bool Scanner::scan_punctuation() {
     case '}':
         tokens.push(Token(TokenType::CLOSE_CURLY, "}"));
         return true;
+    case ',':
+        tokens.push(Token(TokenType::COMMA, ","));
+        return true;
     default:
         return false;
     }

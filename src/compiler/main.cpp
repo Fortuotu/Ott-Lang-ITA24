@@ -19,18 +19,13 @@ static void debug_print_tokens_exit(std::queue<Token> tokens) {
 int main(void) {
     Scanner scanner;
 
-    std::string filename = "/Users/ott/Downloads/Ott-Lang-ITA24/test.ott";
+    std::string filename = "/Users/ott/development/Ott-Lang-ITA24/test.ott";
     std::queue<Token> tokens = scanner.tokenize(filename);
 
     Parser parser(tokens);
-    Expr* ast = parser.parse();
+    AST* ast = parser.parse();
 
-    if (ast == nullptr) {
-        std::cout << "Invalid expression.\n";
-        std::exit(EXIT_SUCCESS);
-    }
-
-    std::cout << ast << '\n';
+    std::cout << ast->decls.size() << '\n';
 
     return EXIT_SUCCESS;
 }

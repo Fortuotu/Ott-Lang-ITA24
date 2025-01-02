@@ -38,6 +38,7 @@ enum class TokenType {
     CLOSE_PARENTH,
     OPEN_CURLY,
     CLOSE_CURLY,
+    COMMA,
 
     NO_TYPE
 };
@@ -82,7 +83,7 @@ public:
 
     void consume(TokenType accepted_type);
     void check();
-    bool validate(std::initializer_list<TokenType> accepted_types);
+    bool match(std::initializer_list<TokenType> accepted_types);
 
     bool out_of_tokens();
 

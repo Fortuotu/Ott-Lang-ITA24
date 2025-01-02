@@ -1,1 +1,14 @@
-(2 * 5 * (56 - 9)) * !0 == a + b
+
+function some_func_1() {
+    if (10 >= 20) {
+        
+    }
+}
+
+function sigma_boy(a) {
+
+}
+
+function some_func_2() {
+
+}
