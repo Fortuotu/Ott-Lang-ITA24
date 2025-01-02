@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 
 #include "compiler/ast/ast.hpp"
@@ -7,6 +8,8 @@
 
 class Parser {
 private:
+    AST* ast = nullptr;
+
     TokenConsumer consumer;
 
     Expr* expr();
@@ -17,9 +20,11 @@ private:
     Expr* expr_primary();
 
     Stmt* stmt();
-public:
-    Parser(std::queue<Token>& tokens) : consumer(tokens) {}
 
-    // TODO: Change Expr* to AST*
-    Expr* parse();
+    Decl* parse_decl();
+    FuncDecl* parse_func_decl();
+public:
+    Parser(std::queue<Token>& tokens) : ast(new AST()), consumer(tokens) {}
+
+    AST* parse();
 };

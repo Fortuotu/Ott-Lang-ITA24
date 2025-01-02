@@ -8,7 +8,7 @@ Expr* Parser::expr_equality() {
     Expr* root = expr_term();
     if (root == nullptr) { return nullptr; }
 
-    if (consumer.validate({TokenType::OP_EQUALS, TokenType::OP_NOT_EQUALS})) {
+    if (consumer.validate({TokenType::OP_EQUALS, TokenType::OP_NOT_EQUALS, TokenType::OP_GREATER_EQUALS, TokenType::OP_LESS_EQUALS})) {
         Expr* equality = expr_equality();
         if (equality == nullptr) { return nullptr; }
 

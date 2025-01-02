@@ -1,8 +1,8 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <queue>
-#include <stdexcept>
 
 enum class TokenType {
     KW_FUNCTION,
@@ -83,6 +83,8 @@ public:
     void consume(TokenType accepted_type);
     void check();
     bool validate(std::initializer_list<TokenType> accepted_types);
+
+    bool out_of_tokens();
 
     Token get();
     TokenType get_type();
