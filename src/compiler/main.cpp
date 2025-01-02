@@ -13,7 +13,7 @@ int main(void) {
         token = tokens.front();
         tokens.pop();
 
-        std::cout << token.val << '\n';
+        std::cout << token.val << " -> " << (int)token.type << '\n';
     }
     
 

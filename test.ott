@@ -6,7 +6,7 @@ function start_frame() {
         frame_count = 0
     }
 
-    frame_count += 1
+    frame_count = frame_count + 1
 }
 
 function start_game() {

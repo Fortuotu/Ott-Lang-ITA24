@@ -6,28 +6,38 @@
 
 enum class TokenType {
     KW_FUNCTION,
+    KW_RETURN,
+    KW_IF,
+    KW_WHILE,
+    
+    KW_TRUE,
+    KW_FALSE,
+
+    OP_NOT,
+    OP_AND,
+    OP_OR,
 
     OP_ADD,
     OP_SUB,
     OP_MUL,
     OP_DIV,
-    OP_EQUALS,
-    OP_NOT_EQUALS,
+
     OP_GREATER,
     OP_LESS,
+    OP_EQUALS,
+    OP_NOT_EQUALS,
     OP_GREATER_EQUALS,
     OP_LESS_EQUALS,
-    OP_ASSIGN,
 
-    OP_NOT,
-    OP_AND,
-    OP_OR,
+    OP_ASSIGN,
 
     IDENTIFIER,
     INT_LITERAL,
 
     OPEN_PARENTH,
     CLOSE_PARENTH,
+    OPEN_CURLY,
+    CLOSE_CURLY,
 
     NO_TYPE
 };
