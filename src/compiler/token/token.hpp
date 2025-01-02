@@ -49,6 +49,8 @@ struct Token {
 
     Token() : type(TokenType::NO_TYPE) {}
     Token(TokenType type, std::string val) : type(type), val(val) {}
+
+    Token(const Token& other) : type(other.type), val(other.val) {}
     Token(Token&& other) noexcept : type(std::exchange(other.type, TokenType::NO_TYPE)), val(std::move(other.val)) {}
 
     Token& operator=(Token& other) noexcept {

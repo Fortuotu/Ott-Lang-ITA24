@@ -20,5 +20,6 @@ private:
 public:
     Parser(std::queue<Token>& tokens) : consumer(tokens) {}
 
-    
+    // TODO: Change Expr* to AST*
+    Expr* parse();
 };

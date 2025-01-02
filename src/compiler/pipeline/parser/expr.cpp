@@ -6,9 +6,13 @@ Expr* Parser::expr() {
 
 Expr* Parser::expr_equality() {
     Expr* root = expr_term();
+    if (root == nullptr) { return nullptr; }
 
     if (consumer.validate({TokenType::OP_EQUALS, TokenType::OP_NOT_EQUALS})) {
-        root = new BinaryExpr(consumer.get_type(), root, expr_equality());
+        Expr* equality = expr_equality();
+        if (equality == nullptr) { return nullptr; }
+
+        root = new BinaryExpr(consumer.get_type(), root, equality);
     }
 
     return root;
@@ -16,9 +20,13 @@ Expr* Parser::expr_equality() {
 
 Expr* Parser::expr_term() {
     Expr* root = expr_factor();
+    if (root == nullptr) { return nullptr; }
 
     if (consumer.validate({TokenType::OP_ADD, TokenType::OP_SUB})) {
-        root = new BinaryExpr(consumer.get_type(), root, expr_term());
+        Expr* term = expr_term();
+        if (term == nullptr) { return nullptr; }
+
+        root = new BinaryExpr(consumer.get_type(), root, term);
     }
 
     return root;
@@ -26,9 +34,13 @@ Expr* Parser::expr_term() {
 
 Expr* Parser::expr_factor() {
     Expr* root = expr_unary();
+    if (root == nullptr) { return nullptr; }
 
     if (consumer.validate({TokenType::OP_MUL, TokenType::OP_DIV})) {
-        root = new BinaryExpr(consumer.get_type(), root, expr_factor());
+        Expr* factor = expr_factor();
+        if (factor == nullptr) { return nullptr; }
+
+        root = new BinaryExpr(consumer.get_type(), root, factor);
     }
 
     return root;
@@ -38,10 +50,13 @@ Expr* Parser::expr_unary() {
     Expr* root = nullptr;
 
     if (consumer.validate({TokenType::OP_NOT, TokenType::OP_SUB})) {
-        root = new UnaryExpr(consumer.get_type(), expr_unary());
-    }
+        Expr* unary = expr_unary();
+        if (unary == nullptr) { return nullptr; }
 
-    root = expr_primary();
+        root = new UnaryExpr(consumer.get_type(), unary);
+    } else {
+        root = expr_primary();
+    }
 
     return root;
 }
@@ -50,9 +65,9 @@ Expr* Parser::expr_primary() {
     Expr* root = nullptr;
 
     if (consumer.validate({TokenType::OPEN_PARENTH})) {
-        root = expr();
+        root = new GroupingExpr(expr());
 
-        consumer.consume(TokenType::CLOSE_PARENTH);
+        if (!consumer.validate({TokenType::CLOSE_PARENTH})) { return nullptr; }
     } else if (consumer.validate({TokenType::IDENTIFIER})) {
         root = new IdfExpr(consumer.get());
     } else if (consumer.validate({TokenType::INT_LITERAL})) {

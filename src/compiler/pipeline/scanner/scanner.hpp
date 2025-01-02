@@ -1,8 +1,6 @@
 #pragma once
 
-// Temporary
 #include <iostream>
-
 #include <fstream>
 #include <sstream>
 #include <regex>
