@@ -1,12 +1,14 @@
 #include "compiler/token/token.hpp"
 
-void TokenConsumer::consume(TokenType accepted_type) {
-    if (tokens.front().type != accepted_type || out_of_tokens()) {
-        std::cout << "Expected a different token after '" << active_token.val << "'.\n";
-        std::exit(EXIT_FAILURE);
+void TokenConsumer::consume() {
+    if (out_of_tokens()) {
+        active_token = Token();
+
+        return;
     }
 
     active_token = tokens.front();
+    tokens.pop();
 }
 
 void TokenConsumer::check() {

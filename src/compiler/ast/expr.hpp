@@ -6,6 +6,7 @@ struct BinaryExpr;
 struct UnaryExpr;
 struct LiteralExpr;
 struct IdfExpr;
+struct CallExpr;
 struct GroupingExpr;
 
 struct ExprVisitor {
@@ -14,6 +15,7 @@ struct ExprVisitor {
     virtual void visit_unary_expr(UnaryExpr& expr) = 0;
     virtual void visit_literal_expr(LiteralExpr& expr) = 0; 
     virtual void visit_idf_expr(IdfExpr& expr) = 0;
+    virtual void visit_call_expr(CallExpr& expr) = 0;
     virtual void visit_grouping_expr(GroupingExpr& expr) = 0;
 };
 
@@ -61,6 +63,14 @@ struct IdfExpr : Expr {
     IdfExpr(Token&& name) : name(std::move(name)) {}
 
     virtual void accept(ExprVisitor& visitor) override { visitor.visit_idf_expr(*this); }
+};
+
+struct CallExpr : Expr {
+    Token name;
+
+    std::vector<Expr*> args;
+
+    virtual void accept(ExprVisitor& visitor) override { visitor.visit_call_expr(*this); }
 };
 
 struct GroupingExpr : Expr {

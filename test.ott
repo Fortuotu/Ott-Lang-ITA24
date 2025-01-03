@@ -1,5 +1,6 @@
 
+function some_func(arg1, arg2) {
+    if (some_func(1, some_func(1, 3))) {
 
-function some_func(arg1, arg2, arg3) {
-
+    }
 }

@@ -8,7 +8,7 @@ AST* Parser::parse() {
     while (!consumer.out_of_tokens()) {
         decl = parse_decl();
         if (!decl) {
-            std::cout << "Some error idk.\n";
+            std::cout << "Syntax error.\n";
             std::exit(EXIT_FAILURE);
         }
 

@@ -11,11 +11,13 @@ private:
     TokenConsumer consumer;
 
     Expr* parse_expr();
-    Expr* expr_equality();
-    Expr* expr_term();
-    Expr* expr_factor();
-    Expr* expr_unary();
-    Expr* expr_primary();
+    Expr* parse_equality();
+    Expr* parse_term();
+    Expr* parse_factor();
+    Expr* parse_unary();
+    Expr* parse_primary();
+    CallExpr* parse_call_expr();
+    GroupingExpr* parse_grouping_expr();
 
     Stmt* parse_stmt();
     Stmt* parse_decl();

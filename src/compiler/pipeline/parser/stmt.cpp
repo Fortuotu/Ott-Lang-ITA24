@@ -3,7 +3,7 @@
 Stmt* Parser::parse_stmt() {
     Stmt* stmt = nullptr;
 
-    consumer.check();
+    consumer.consume();
 
     switch (consumer.get_type()) {
     case TokenType::OPEN_CURLY:
@@ -22,7 +22,7 @@ Stmt* Parser::parse_stmt() {
 Stmt* Parser::parse_decl() {
     Stmt* decl = nullptr;
 
-    consumer.check();
+    consumer.consume();
 
     switch (consumer.get_type()) {
     case TokenType::KW_FUNCTION:
@@ -38,7 +38,6 @@ Stmt* Parser::parse_decl() {
 FuncDecl* Parser::parse_func_decl() {
     FuncDecl* decl = new FuncDecl();
 
-    if (!consumer.match({TokenType::KW_FUNCTION})) { return nullptr; }
     if (!consumer.match({TokenType::IDENTIFIER})) { return nullptr; }
 
     decl->name = consumer.get();
@@ -56,6 +55,7 @@ FuncDecl* Parser::parse_func_decl() {
     }
 
     if (!consumer.match({TokenType::CLOSE_PARENTH})) { return nullptr; }
+    if (!consumer.match({TokenType::OPEN_CURLY})) { return nullptr; }
 
     decl->body = parse_block_stmt();
     if (!decl->body) { return nullptr; }
@@ -65,8 +65,6 @@ FuncDecl* Parser::parse_func_decl() {
 
 BlockStmt* Parser::parse_block_stmt() {
     BlockStmt* block_stmt = new BlockStmt();
-
-    if (!consumer.match({TokenType::OPEN_CURLY})) { return nullptr; }
 
     while (!consumer.match({TokenType::CLOSE_CURLY})) {
         if (consumer.out_of_tokens()) { return nullptr; }
@@ -83,13 +81,13 @@ BlockStmt* Parser::parse_block_stmt() {
 IfStmt* Parser::parse_if_stmt() {
     IfStmt* stmt = new IfStmt();
 
-    if (!consumer.match({TokenType::KW_IF})) { return nullptr; }
     if (!consumer.match({TokenType::OPEN_PARENTH})) { return nullptr; }
 
     stmt->cond = parse_expr();
     if (!stmt->cond) { return nullptr; }
 
     if (!consumer.match({TokenType::CLOSE_PARENTH})) { return nullptr; }
+    if (!consumer.match({TokenType::OPEN_CURLY})) { return nullptr; }
 
     stmt->body = parse_block_stmt();
     if (!stmt->body) { return nullptr; }

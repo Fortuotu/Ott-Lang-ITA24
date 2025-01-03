@@ -81,7 +81,7 @@ private:
 public:
     TokenConsumer(std::queue<Token>& tokens) : tokens(std::move(tokens)) {}
 
-    void consume(TokenType accepted_type);
+    void consume();
     void check();
     bool match(std::initializer_list<TokenType> accepted_types);
 
