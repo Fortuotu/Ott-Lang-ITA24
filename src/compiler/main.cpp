@@ -22,8 +22,6 @@ int main(void) {
     std::string filename = "/Users/ott/development/Ott-Lang-ITA24/test.ott";
     std::queue<Token> tokens = scanner.tokenize(filename);
 
-    debug_print_tokens(tokens);
-
     Parser parser(tokens);
     AST* ast = parser.parse();
 

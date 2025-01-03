@@ -15,5 +15,10 @@ AST* Parser::parse() {
         ast->decls.push_back(decl);
     }
 
+    if (!env.all_future_defs_assured()) {
+        std::cout << "All names not defined.\n";
+        std::exit(EXIT_FAILURE);
+    }
+
     return ast;
 }

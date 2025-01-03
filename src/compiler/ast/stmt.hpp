@@ -9,12 +9,15 @@ struct Expr;
 struct FuncDecl;
 struct BlockStmt;
 struct IfStmt;
+struct RetStmt;
 
 struct StmtVisitor {
     virtual ~StmtVisitor() = default;
     virtual void visit_func_decl(FuncDecl& stmt) = 0;
     virtual void visit_block_stmt(BlockStmt& stmt) = 0;
+    virtual void visit_ret_stmt(RetStmt& stmt) = 0;
     virtual void visit_if_stmt(IfStmt& stmt) = 0;
+
 };
 
 struct Stmt {
@@ -35,6 +38,12 @@ struct BlockStmt : Stmt {
     std::vector<Stmt*> stmts;
 
     virtual void accept(StmtVisitor& visitor) override { visitor.visit_block_stmt(*this); }
+};
+
+struct RetStmt : Stmt {
+    Expr* val;
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visit_ret_stmt(*this); }
 };
 
 struct IfStmt : Stmt {

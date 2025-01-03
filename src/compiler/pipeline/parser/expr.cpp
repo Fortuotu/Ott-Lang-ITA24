@@ -70,13 +70,17 @@ Expr* Parser::parse_primary() {
         if (!root) { return nullptr; }
     }
     else if (consumer.match({TokenType::IDENTIFIER})) {
+        Token idf = consumer.get();
+
         if (consumer.match({TokenType::OPEN_PARENTH})) {
             root = parse_call_expr();
             if (!root) { return nullptr; }
         }
         else {
-            root = new IdfExpr(consumer.get());
+            root = new IdfExpr(idf);
         }
+
+        if (!env.is_name_defined(idf)) { env.assure_future_global_def(idf); }
     }
     else if (consumer.match({TokenType::INT_LITERAL})) {
         root = new LiteralExpr(consumer.get());

@@ -5,10 +5,13 @@
 
 #include "compiler/ast/ast.hpp"
 #include "compiler/token/token.hpp"
+#include "compiler/environment/environment.hpp"
 
 class Parser {
 private:
     TokenConsumer consumer;
+
+    DefEnv env;
 
     Expr* parse_expr();
     Expr* parse_equality();
@@ -23,6 +26,7 @@ private:
     Stmt* parse_decl();
     FuncDecl* parse_func_decl();
     BlockStmt* parse_block_stmt();
+    RetStmt* parse_ret_stmt();
     IfStmt* parse_if_stmt();
 public:
     Parser(std::queue<Token>& tokens) : consumer(tokens) {}

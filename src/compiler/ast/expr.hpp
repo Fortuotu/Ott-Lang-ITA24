@@ -60,7 +60,7 @@ struct LiteralExpr : Expr {
 struct IdfExpr : Expr {
     Token name;
 
-    IdfExpr(Token&& name) : name(std::move(name)) {}
+    IdfExpr(Token& name) : name(name) {}
 
     virtual void accept(ExprVisitor& visitor) override { visitor.visit_idf_expr(*this); }
 };

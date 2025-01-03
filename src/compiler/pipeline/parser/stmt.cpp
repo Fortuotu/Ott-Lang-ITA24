@@ -7,7 +7,12 @@ Stmt* Parser::parse_stmt() {
 
     switch (consumer.get_type()) {
     case TokenType::OPEN_CURLY:
+        env.start_scope();
         stmt = parse_block_stmt();
+        env.end_scope();
+        break;
+    case TokenType::KW_RETURN:
+        stmt = parse_ret_stmt();
         break;
     case TokenType::KW_IF:
         stmt = parse_if_stmt();
@@ -57,8 +62,13 @@ FuncDecl* Parser::parse_func_decl() {
     if (!consumer.match({TokenType::CLOSE_PARENTH})) { return nullptr; }
     if (!consumer.match({TokenType::OPEN_CURLY})) { return nullptr; }
 
+    env.start_scope_with(decl->params);
     decl->body = parse_block_stmt();
+    env.end_scope();
+
     if (!decl->body) { return nullptr; }
+
+    env.define_name(decl->name);
 
     return decl;
 }
@@ -76,6 +86,15 @@ BlockStmt* Parser::parse_block_stmt() {
     }
 
     return block_stmt;
+}
+
+RetStmt* Parser::parse_ret_stmt() {
+    RetStmt* stmt = new RetStmt();
+
+    stmt->val = parse_expr();
+    if (!stmt->val) { return nullptr; }
+
+    return stmt;
 }
 
 IfStmt* Parser::parse_if_stmt() {
