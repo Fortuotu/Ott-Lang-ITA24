@@ -5,4 +5,4 @@ add_subdirectory(environment)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_executable(otc main.cpp)
-target_link_libraries(otc PRIVATE parser scanner token environment)
+target_link_libraries(otc PRIVATE parser scanner bytecode_gen token environment)

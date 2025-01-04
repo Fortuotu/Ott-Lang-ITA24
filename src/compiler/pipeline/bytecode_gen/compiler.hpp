@@ -19,7 +19,9 @@ private:
 
     void emit(Opcode opcode) {  bytecode.push_back(static_cast<std::uint8_t>(opcode)); }
     void emit(Opcode opcode, std::uint8_t arg) { bytecode.push_back(static_cast<std::uint8_t>(opcode)); bytecode.push_back(arg); }
-    void emit(Opcode opcode, std::uint16_t arg) { bytecode.push_back(static_cast<std::uint8_t>(opcode)); bytecode.push_back(static_cast<std::uint8_t>(arg >> 8)); bytecode.push_back(static_cast<std::uint8_t>(arg & 0xff)); }
+    void emit(Opcode opcode, std::uint16_t arg) { bytecode.push_back(static_cast<std::uint8_t>(opcode));
+                                                  bytecode.push_back(static_cast<std::uint8_t>(arg >> 8));
+                                                  bytecode.push_back(static_cast<std::uint8_t>(arg & 0xff)); }
 public:
     virtual void visit_binary_expr(BinaryExpr& expr) override;
     virtual void visit_unary_expr(UnaryExpr& expr) override;

@@ -1,15 +1,8 @@
 
-a = 10
-
-function square_a() {
-    print a * a
-
-    square_a()
-    second_func()
+function add(a, b) {
+    return a + b
 }
 
-square_a()
+x = add(1, 2)
 
-function second_func() {
-    return 10
-}
+print x

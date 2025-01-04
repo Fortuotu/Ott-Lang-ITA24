@@ -1,20 +1,6 @@
 #include "compiler/pipeline/scanner/scanner.hpp"
 #include "compiler/pipeline/parser/parser.hpp"
-
-static void debug_print_tokens(std::queue<Token> tokens) {
-    Token token;
-
-    std::cout << '\n';
-
-    while (tokens.size() > 0) {
-        token = tokens.front();
-        tokens.pop();
-
-        std::cout << token.val << " -> " << (int)token.type << '\n';
-    }
-
-    std::cout << '\n';
-}
+#include "compiler/pipeline/bytecode_gen/compiler.hpp"
 
 int main(void) {
     Scanner scanner;
@@ -24,6 +10,9 @@ int main(void) {
 
     Parser parser(tokens);
     AST* ast = parser.parse();
+
+    Compiler compiler;
+    compiler.compile(ast);
 
     return EXIT_SUCCESS;
 }
