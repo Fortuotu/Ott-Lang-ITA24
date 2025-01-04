@@ -27,6 +27,7 @@ private:
     IfStmt* parse_if_stmt();
     AssignStmt* parse_assign_stmt(Token& name);
     CallStmt* parse_call_stmt(Token& name);
+    PrintStmt* parse_print_stmt();
 public:
     Parser(std::queue<Token>& tokens) : consumer(tokens) {}
 

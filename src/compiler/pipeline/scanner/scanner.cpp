@@ -148,6 +148,7 @@ bool Scanner::scan_word() {
         { "return",   TokenType::KW_RETURN   },
         { "if",       TokenType::KW_IF       },
         { "while",    TokenType::KW_WHILE    },
+        { "print",    TokenType::KW_PRINT    },
 
         { "true",     TokenType::KW_TRUE     },
         { "false",    TokenType::KW_FALSE    },

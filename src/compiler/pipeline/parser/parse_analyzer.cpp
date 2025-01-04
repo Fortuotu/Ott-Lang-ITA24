@@ -4,12 +4,6 @@ void ParseAnalyser::analyze(AST* ast) {
     for (Stmt* stmt : ast->stmts) {
         analyze_stmt(stmt);
     }
-
-    for (FuncDecl* func : funcs) {
-        env.start_scope_with(func->params);
-        analyze_stmt(func->body);
-        env.end_scope();
-    }
 }
 
 void ParseAnalyser::analyze_expr(Expr* expr) {
@@ -35,17 +29,28 @@ void ParseAnalyser::visit_literal_expr(LiteralExpr& expr) {
 void ParseAnalyser::visit_idf_expr(IdfExpr& expr) {
     if (!env.is_name_defined(expr.name)) {
         std::cout << "Undefined variable: " << expr.name.val << "\n";
+        std::exit(EXIT_FAILURE);
     }
 }
 
 void ParseAnalyser::visit_call_expr(CallExpr& expr) {
-    if (!env.is_name_defined(expr.name)) {
+    if (funcs.find(expr.name.val) == funcs.end()) {
         std::cout << "Undefined function: " << expr.name.val << "\n";
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (funcs.at(expr.name.val)->params.size() != expr.args.size()) {
+        std::cout << expr.name.val << " takes " << funcs.at(expr.name.val)->params.size() << " arguments, but " << expr.args.size() << " were given.\n";
+        std::exit(EXIT_FAILURE);
     }
 
     for (Expr* arg : expr.args) {
         analyze_expr(arg);
     }
+
+    env.start_scope_with(funcs.at(expr.name.val)->params);
+    analyze_stmt(funcs.at(expr.name.val)->body);
+    env.end_scope();
 }
 
 void ParseAnalyser::visit_grouping_expr(GroupingExpr& expr) {
@@ -54,8 +59,7 @@ void ParseAnalyser::visit_grouping_expr(GroupingExpr& expr) {
 
 
 void ParseAnalyser::visit_func_decl(FuncDecl& stmt) {
-    env.define_name(stmt.name);
-    funcs.push_back(&stmt);
+    funcs.insert(std::make_pair(stmt.name.val, &stmt));
 }
 
 void ParseAnalyser::visit_block_stmt(BlockStmt& stmt) {
@@ -82,11 +86,25 @@ void ParseAnalyser::visit_assign_stmt(AssignStmt& stmt) {
 }
 
 void ParseAnalyser::visit_call_stmt(CallStmt& stmt) {
-    if (!env.is_name_defined(stmt.name)) {
+    if (funcs.find(stmt.name.val) == funcs.end()) {
         std::cout << "Undefined function: " << stmt.name.val << "\n";
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (funcs.at(stmt.name.val)->params.size() != stmt.args.size()) {
+        std::cout << stmt.name.val << " takes " << funcs.at(stmt.name.val)->params.size() << " arguments, but " << stmt.args.size() << " were given.\n";
+        std::exit(EXIT_FAILURE);
     }
 
     for (Expr* arg : stmt.args) {
         analyze_expr(arg);
     }
+
+    env.start_scope_with(funcs.at(stmt.name.val)->params);
+    analyze_stmt(funcs.at(stmt.name.val)->body);
+    env.end_scope();
+}
+
+void ParseAnalyser::visit_print_stmt(PrintStmt& stmt) {
+    analyze_expr(stmt.expr);
 }

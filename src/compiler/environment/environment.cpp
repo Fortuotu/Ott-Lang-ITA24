@@ -23,5 +23,11 @@ void Environment::define_name(Token name) {
 }
 
 bool Environment::is_name_defined(Token name) {
-    return scopes.back().find(name.val) != scopes.back().end();
+    for (auto& scope : scopes) {
+        if (scope.find(name.val) != scope.end()) {
+            return true;
+        }
+    }
+
+    return false;
 }

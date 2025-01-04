@@ -9,6 +9,7 @@ enum class TokenType {
     KW_RETURN,
     KW_IF,
     KW_WHILE,
+    KW_PRINT,
     
     KW_TRUE,
     KW_FALSE,

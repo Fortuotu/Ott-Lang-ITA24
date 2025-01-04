@@ -13,6 +13,8 @@ struct IfStmt;
 struct AssignStmt;
 struct CallStmt;
 
+struct PrintStmt;
+
 struct StmtVisitor {
     virtual ~StmtVisitor() = default;
     virtual void visit_func_decl(FuncDecl& stmt) = 0;
@@ -21,6 +23,7 @@ struct StmtVisitor {
     virtual void visit_if_stmt(IfStmt& stmt) = 0;
     virtual void visit_assign_stmt(AssignStmt& stmt) = 0;
     virtual void visit_call_stmt(CallStmt& stmt) = 0;
+    virtual void visit_print_stmt(PrintStmt& stmt) = 0;
 };
 
 struct Stmt {
@@ -68,4 +71,10 @@ struct CallStmt : Stmt {
     std::vector<Expr*> args;
 
     virtual void accept(StmtVisitor& visitor) override { visitor.visit_call_stmt(*this); }
+};
+
+struct PrintStmt : Stmt {
+    Expr* expr;
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visit_print_stmt(*this); }
 };

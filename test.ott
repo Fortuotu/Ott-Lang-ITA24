@@ -1,9 +1,9 @@
 
-
+x = 5
 
 function add(a, b) {
-    return a + b
+    return a + b + x + y
 }
 
-x = 123 + add(123, 123)
+y = add(1, 2)
 

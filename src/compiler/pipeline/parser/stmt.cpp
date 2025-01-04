@@ -28,6 +28,9 @@ Stmt* Parser::parse_stmt() {
             stmt = parse_call_stmt(name);
         }
         break;
+    case TokenType::KW_PRINT:
+        stmt = parse_print_stmt();
+        break;
     default:
         break;
     }
@@ -137,4 +140,13 @@ CallStmt* Parser::parse_call_stmt(Token& name) {
     }
 
     return call_stmt;
+}
+
+PrintStmt* Parser::parse_print_stmt() {
+    PrintStmt* stmt = new PrintStmt();
+
+    stmt->expr = parse_expr();
+    if (!stmt->expr) { return nullptr; }
+
+    return stmt;
 }

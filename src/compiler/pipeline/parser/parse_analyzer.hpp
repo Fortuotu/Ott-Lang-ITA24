@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "compiler/ast/ast.hpp"
 #include "compiler/environment/environment.hpp"
 
@@ -7,7 +9,7 @@ class ParseAnalyser : StmtVisitor, ExprVisitor {
 private:
     Environment env;
 
-    std::vector<FuncDecl*> funcs;
+    std::unordered_map<std::string, FuncDecl*> funcs;
 
     void analyze_expr(Expr* expr);
     void analyze_stmt(Stmt* stmt);
@@ -25,6 +27,7 @@ public:
     virtual void visit_if_stmt(IfStmt& stmt) override;
     virtual void visit_assign_stmt(AssignStmt& stmt) override;
     virtual void visit_call_stmt(CallStmt& stmt) override;
+    virtual void visit_print_stmt(PrintStmt& stmt) override;
 
     void analyze(AST* ast);
 };
