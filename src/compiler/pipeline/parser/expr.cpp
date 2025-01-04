@@ -70,17 +70,15 @@ Expr* Parser::parse_primary() {
         if (!root) { return nullptr; }
     }
     else if (consumer.match({TokenType::IDENTIFIER})) {
-        Token idf = consumer.get();
+        Token name = consumer.get();
 
         if (consumer.match({TokenType::OPEN_PARENTH})) {
-            root = parse_call_expr();
+            root = parse_call_expr(name);
             if (!root) { return nullptr; }
         }
         else {
-            root = new IdfExpr(idf);
+            root = new IdfExpr(name);
         }
-
-        if (!env.is_name_defined(idf)) { env.assure_future_global_def(idf); }
     }
     else if (consumer.match({TokenType::INT_LITERAL})) {
         root = new LiteralExpr(consumer.get());
@@ -89,10 +87,10 @@ Expr* Parser::parse_primary() {
     return root;
 }
 
-CallExpr* Parser::parse_call_expr() {
+CallExpr* Parser::parse_call_expr(Token& name) {
     CallExpr* call_expr = new CallExpr();
 
-    call_expr->name = consumer.get();
+    call_expr->name = name;
 
     if (!consumer.match({TokenType::CLOSE_PARENTH})) {
         Expr* expr = parse_expr();

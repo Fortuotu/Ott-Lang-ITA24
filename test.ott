@@ -1,10 +1,9 @@
 
-function entry() {
-    if (add(1, 2)) {
-        return 1
-    }
-}
+
 
 function add(a, b) {
     return a + b
 }
+
+x = 123 + add(123, 123)
+

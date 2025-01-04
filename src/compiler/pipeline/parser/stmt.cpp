@@ -2,14 +2,16 @@
 
 Stmt* Parser::parse_stmt() {
     Stmt* stmt = nullptr;
+    Token name;
 
     consumer.consume();
 
     switch (consumer.get_type()) {
+    case TokenType::KW_FUNCTION:
+        stmt = parse_func_decl();
+        break;
     case TokenType::OPEN_CURLY:
-        env.start_scope();
         stmt = parse_block_stmt();
-        env.end_scope();
         break;
     case TokenType::KW_RETURN:
         stmt = parse_ret_stmt();
@@ -17,27 +19,20 @@ Stmt* Parser::parse_stmt() {
     case TokenType::KW_IF:
         stmt = parse_if_stmt();
         break;
+    case TokenType::IDENTIFIER:
+        name = consumer.get();
+        if (consumer.match({TokenType::OP_ASSIGN})) {
+            stmt = parse_assign_stmt(name);
+        }
+        else if (consumer.match({TokenType::OPEN_PARENTH})) {
+            stmt = parse_call_stmt(name);
+        }
+        break;
     default:
         break;
     }
 
     return stmt;
-}
-
-Stmt* Parser::parse_decl() {
-    Stmt* decl = nullptr;
-
-    consumer.consume();
-
-    switch (consumer.get_type()) {
-    case TokenType::KW_FUNCTION:
-        decl = parse_func_decl();
-        break;
-    default:
-        break;
-    }
-
-    return decl;
 }
 
 FuncDecl* Parser::parse_func_decl() {
@@ -62,13 +57,8 @@ FuncDecl* Parser::parse_func_decl() {
     if (!consumer.match({TokenType::CLOSE_PARENTH})) { return nullptr; }
     if (!consumer.match({TokenType::OPEN_CURLY})) { return nullptr; }
 
-    env.start_scope_with(decl->params);
     decl->body = parse_block_stmt();
-    env.end_scope();
-
     if (!decl->body) { return nullptr; }
-
-    env.define_name(decl->name);
 
     return decl;
 }
@@ -112,4 +102,39 @@ IfStmt* Parser::parse_if_stmt() {
     if (!stmt->body) { return nullptr; }
 
     return stmt;
+}
+
+AssignStmt* Parser::parse_assign_stmt(Token& name) {
+    AssignStmt* stmt = new AssignStmt();
+
+    stmt->left_operand = name;
+
+    stmt->right_operand = parse_expr();
+    if (!stmt->right_operand) { return nullptr; }
+
+    return stmt;
+}
+
+CallStmt* Parser::parse_call_stmt(Token& name) {
+    CallStmt* call_stmt = new CallStmt();
+
+    call_stmt->name = name;
+
+    if (!consumer.match({TokenType::CLOSE_PARENTH})) {
+        Expr* expr = parse_expr();
+        if (!expr) { return nullptr; }
+
+        call_stmt->args.push_back(expr);
+
+        while (consumer.match({TokenType::COMMA})) {
+            expr = parse_expr();
+            if (!expr) { return nullptr; }
+
+            call_stmt->args.push_back(expr);
+        }
+
+        if (!consumer.match({TokenType::CLOSE_PARENTH})) { return nullptr; }
+    }
+
+    return call_stmt;
 }

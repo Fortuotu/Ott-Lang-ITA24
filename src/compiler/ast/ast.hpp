@@ -6,5 +6,5 @@
 #include "compiler/ast/stmt.hpp"
 
 struct AST {
-    std::vector<Stmt*> decls;
+    std::vector<Stmt*> stmts;
 };

@@ -3,22 +3,20 @@
 AST* Parser::parse() {
     AST* ast = new AST();
 
-    Stmt* decl = nullptr;
+    Stmt* stmt = nullptr;
 
     while (!consumer.out_of_tokens()) {
-        decl = parse_decl();
-        if (!decl) {
+        stmt = parse_stmt();
+        if (!stmt) {
             std::cout << "Syntax error.\n";
             std::exit(EXIT_FAILURE);
         }
 
-        ast->decls.push_back(decl);
+        ast->stmts.push_back(stmt);
     }
 
-    if (!env.all_future_defs_assured()) {
-        std::cout << "All names not defined.\n";
-        std::exit(EXIT_FAILURE);
-    }
+    ParseAnalyser analyser;
+    analyser.analyze(ast);
 
     return ast;
 }
