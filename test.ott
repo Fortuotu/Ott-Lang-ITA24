@@ -1,9 +1,15 @@
 
-x = 5
+a = 10
 
-function add(a, b) {
-    return a + b + x + y
+function square_a() {
+    print a * a
+
+    square_a()
+    second_func()
 }
 
-y = add(1, 2)
+square_a()
 
+function second_func() {
+    return 10
+}
