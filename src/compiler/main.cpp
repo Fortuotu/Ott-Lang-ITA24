@@ -11,8 +11,11 @@ int main(void) {
     Parser parser(tokens);
     AST* ast = parser.parse();
 
+    std::string output_filename = "/Users/ott/development/Ott-Lang-ITA24/test.cott";
+
     Compiler compiler;
     compiler.compile(ast);
+    compiler.write_to_file(output_filename);
 
     return EXIT_SUCCESS;
 }

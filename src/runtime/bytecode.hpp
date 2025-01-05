@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 enum class Opcode {
     NO_OP,
 
@@ -9,12 +11,23 @@ enum class Opcode {
     PUSH,
     POP,
 
+    JMP_IFT,
+    JMP_IFF,
+    CALL,
+
     LOAD_CONST,
+
+    STORE_GLOBAL,
+    LOAD_GLOBAL,
+
+    STORE_LOCAL,
+    LOAD_LOCAL,
 
     ADD,
     SUB,
     MUL,
     DIV,
+    NEG,
 
     GT,
     LT,
@@ -28,6 +41,4 @@ enum class Opcode {
     NOT
 };
 
-struct RuntimeValue {
-    int val;
-};
+using Value = std::int64_t;

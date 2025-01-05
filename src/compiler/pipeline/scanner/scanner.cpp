@@ -4,10 +4,6 @@ static bool is_space(char ch) {
     return std::isspace(static_cast<unsigned char>(ch));
 }
 
-static bool is_print(char ch) {
-    return std::isprint(static_cast<unsigned char>(ch));
-}
-
 static bool is_digit(char ch) {
     return std::isdigit(static_cast<unsigned char>(ch));
 }
