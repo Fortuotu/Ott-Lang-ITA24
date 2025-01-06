@@ -11,8 +11,8 @@ enum class Opcode {
     PUSH,
     POP,
 
-    JMP_IFT,
-    JMP_IFF,
+    JUMP_IF_TRUE,
+    JUMP_IF_FALSE,
     CALL,
 
     LOAD_CONST,

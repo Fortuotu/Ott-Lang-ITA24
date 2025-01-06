@@ -26,10 +26,13 @@ private:
     std::vector<std::unordered_map<std::string, std::size_t>> scopes;
 
     std::size_t selected;
-    bool selected_scope;
+    std::uint8_t selected_scope;
+
+    std::uint8_t current_scope() { return scopes.size() == 1 ? GLOBAL_SCOPE : LOCAL_SCOPE; }
 public:
-    constexpr static bool GLOBAL_SCOPE = 0;
-    constexpr static bool LOCAL_SCOPE = 1;
+    constexpr static std::uint8_t GLOBAL_SCOPE = 0;
+    constexpr static std::uint8_t LOCAL_SCOPE = 1;
+    constexpr static std::uint8_t NO_SCOPE = 0xff;
 
     EnvironmentEx() : scopes(1) {}
 

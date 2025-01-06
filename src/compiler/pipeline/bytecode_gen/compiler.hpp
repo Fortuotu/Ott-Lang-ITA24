@@ -14,14 +14,25 @@ class Compiler : StmtVisitor, ExprVisitor {
 private:
     EnvironmentEx env;
 
-    ByteBuffer bytecode;
+    ByteBuffer main;
+    
+    std::vector<ByteBuffer> funcs;
 
-    std::unordered_map<std::string, std::uint8_t> const_idx;
+    std::vector<std::uint16_t> func_table;
+    std::unordered_map<std::string, std::uint8_t> func_idx;
+
+    ByteBuffer* buffer;
+
     std::vector<Value> const_table;
+    std::unordered_map<std::string, std::uint8_t> const_idx;
 
     void compile_stmt(Stmt* stmt) { stmt->accept(*this); }
     void compile_expr(Expr* expr) { expr->accept(*this); }
+
+    void fill_func_table(std::size_t starting_offset);
 public:
+    Compiler() : buffer(&main) {}
+
     virtual void visit_binary_expr(BinaryExpr& expr) override;
     virtual void visit_unary_expr(UnaryExpr& expr) override;
     virtual void visit_literal_expr(LiteralExpr& expr) override;

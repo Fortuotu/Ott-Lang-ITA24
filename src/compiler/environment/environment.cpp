@@ -40,7 +40,7 @@ void EnvironmentEx::start_scope_with(std::vector<Token>& names) {
     start_scope();
 
     for (Token name : names) {
-       define(name);
+        scopes.back().insert(std::make_pair(name.val, scopes.back().size()));
     }
 }
 
@@ -54,6 +54,7 @@ void EnvironmentEx::define(Token name) {
     scopes.back().insert(std::make_pair(name.val, scopes.back().size()));
 
     selected = scopes.back().at(name.val);
+    selected_scope = current_scope();
 }
 
 bool EnvironmentEx::find_defined(Token name) {
@@ -72,6 +73,9 @@ bool EnvironmentEx::find_defined(Token name) {
 
         return true;
     }
+
+    selected = 0;
+    selected_scope = NO_SCOPE;
 
     return false;
 }

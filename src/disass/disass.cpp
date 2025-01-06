@@ -31,14 +31,46 @@ void Disassembler::disassemble_instruction() {
     std::string instruction_str;
 
     switch (get_opcode()) {
+    case Opcode::ADD:
+        instruction_str = "ADD";
+        break;
+    case Opcode::SUB:
+        instruction_str = "SUB";
+        break;
+    case Opcode::MUL:
+        instruction_str = "MUL";
+        break;
+    case Opcode::DIV:
+        instruction_str = "DIV";
+        break;
     case Opcode::LOAD_CONST:
         instruction_str = "LOAD_CONST " + std::to_string(get_byte());
+        break;
+    case Opcode::STORE_GLOBAL:
+        instruction_str = "STORE_GLOBAL " + std::to_string(get_byte());
         break;
     case Opcode::LOAD_GLOBAL:
         instruction_str = "LOAD_GLOBAL " + std::to_string(get_byte());
         break;
+    case Opcode::STORE_LOCAL:
+        instruction_str = "STORE_LOCAL " + std::to_string(get_byte());
+        break;
     case Opcode::LOAD_LOCAL:
         instruction_str = "LOAD_LOCAL " + std::to_string(get_byte());
+        break;
+    case Opcode::JUMP_IF_TRUE:
+        instruction_str = "JUMP_IF_TRUE " + std::to_string(get_byte());
+        break;
+    case Opcode::JUMP_IF_FALSE:
+        instruction_str = "JMP_IF_FALSE " + std::to_string(get_byte());
+        break;
+    case Opcode::CALL:
+        instruction_str = "CALL " + std::to_string(get_byte()) + ", " + std::to_string(get_byte());
+        break;
+    case Opcode::RET:
+        instruction_str = "RET";
+        break;
+    default:
         break;
     };
 

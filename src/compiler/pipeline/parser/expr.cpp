@@ -23,10 +23,12 @@ Expr* Parser::parse_term() {
     if (root == nullptr) { return nullptr; }
 
     if (consumer.match({TokenType::OP_ADD, TokenType::OP_SUB})) {
+        TokenType type = consumer.get_type();
+
         Expr* term = parse_term();
         if (term == nullptr) { return nullptr; }
 
-        root = new BinaryExpr(consumer.get_type(), root, term);
+        root = new BinaryExpr(type, root, term);
     }
 
     return root;
@@ -37,10 +39,12 @@ Expr* Parser::parse_factor() {
     if (root == nullptr) { return nullptr; }
 
     if (consumer.match({TokenType::OP_MUL, TokenType::OP_DIV})) {
+        TokenType type = consumer.get_type();
+
         Expr* factor = parse_factor();
         if (factor == nullptr) { return nullptr; }
 
-        root = new BinaryExpr(consumer.get_type(), root, factor);
+        root = new BinaryExpr(type, root, factor);
     }
 
     return root;
@@ -50,10 +54,12 @@ Expr* Parser::parse_unary() {
     Expr* root = nullptr;
 
     if (consumer.match({TokenType::OP_NOT, TokenType::OP_SUB})) {
+        TokenType type = consumer.get_type();
+
         Expr* unary = parse_unary();
         if (unary == nullptr) { return nullptr; }
 
-        root = new UnaryExpr(consumer.get_type(), unary);
+        root = new UnaryExpr(type, unary);
     }
     else {
         root = parse_primary();
