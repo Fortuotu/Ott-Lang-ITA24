@@ -15,17 +15,18 @@ void Compiler::write_to_file(std::string& filename) {
         std::exit(EXIT_FAILURE);
     }
 
-    std::size_t size = 0;
+    std::uint32_t const_tab_size = 0;
+    std::uint32_t func_tab_size = 0;
 
-    size = const_table.size() * sizeof(Value);
-    of.write(reinterpret_cast<char*>(size), sizeof(size));
+    const_tab_size = const_table.size() * sizeof(Value);
+    of.write(reinterpret_cast<char*>(const_tab_size), sizeof(const_tab_size));
 
-    size = func_table.size() * sizeof(std::uint16_t);
-    of.write(reinterpret_cast<char*>(size), sizeof(size));
+    func_tab_size = func_table.size() * sizeof(std::uint16_t);
+    of.write(reinterpret_cast<char*>(func_tab_size), sizeof(func_tab_size));
 
-    of.write(reinterpret_cast<char*>(const_table.data()), size);
+    of.write(reinterpret_cast<char*>(const_table.data()), const_tab_size);
 
-    of.write(reinterpret_cast<char*>(func_table.data()), size);
+    of.write(reinterpret_cast<char*>(func_table.data()), func_tab_size);
 
     of.write(reinterpret_cast<char*>(main.bytes.data()), main.bytes.size());
     for (ByteBuffer& func : funcs) {
