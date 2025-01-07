@@ -9,10 +9,12 @@ Expr* Parser::parse_equality() {
     if (root == nullptr) { return nullptr; }
 
     if (consumer.match({TokenType::OP_EQUALS, TokenType::OP_NOT_EQUALS, TokenType::OP_GREATER_EQUALS, TokenType::OP_LESS_EQUALS})) {
+        TokenType type = consumer.get_type();
+
         Expr* equality = parse_equality();
         if (equality == nullptr) { return nullptr; }
 
-        root = new BinaryExpr(consumer.get_type(), root, equality);
+        root = new BinaryExpr(type, root, equality);
     }
 
     return root;
