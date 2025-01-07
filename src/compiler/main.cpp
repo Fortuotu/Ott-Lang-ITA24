@@ -5,13 +5,13 @@
 int main(void) {
     Scanner scanner;
 
-    std::string filename = "/Users/ott/development/Ott-Lang-ITA24/test.ott";
+    std::string filename = "/home/ott/Development/Ott-Lang-ITA24/test.ott";
     std::queue<Token> tokens = scanner.tokenize(filename);
 
     Parser parser(tokens);
     AST* ast = parser.parse();
 
-    std::string output_filename = "/Users/ott/development/Ott-Lang-ITA24/test.cott";
+    std::string output_filename = "/home/ott/Development/Ott-Lang-ITA24/test.cott";
 
     Compiler compiler;
     compiler.compile(ast);

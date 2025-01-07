@@ -18,38 +18,32 @@ static std::vector<std::uint8_t> read_binary_file(const std::string& filename) {
     return data;
 }
 
-static uint64_t read_uint64(std::vector<std::uint8_t>& data, std::size_t& offset) {
+static std::uint64_t read_uint64(std::vector<std::uint8_t>& data, std::size_t& offset) {
     uint64_t value = 0;
 
     for (std::size_t i = 0; i < sizeof(uint64_t); i++) {
         value |= static_cast<uint64_t>(data[offset++]) << (i * 8);
     }
 
-    offset += sizeof(uint64_t);
-
     return value;
 }
 
-static uint32_t read_uint32(std::vector<std::uint8_t>& data, std::size_t& offset) {
+static std::uint32_t read_uint32(std::vector<std::uint8_t>& data, std::size_t& offset) {
     uint32_t value = 0;
 
     for (std::size_t i = 0; i < sizeof(uint32_t); i++) {
         value |= static_cast<uint32_t>(data[offset++]) << (i * 8);
     }
 
-    offset += sizeof(uint32_t);
-
     return value;
 }
 
-static uint16_t read_uint16(std::vector<std::uint8_t>& data, std::size_t& offset) {
+static std::uint16_t read_uint16(std::vector<std::uint8_t>& data, std::size_t& offset) {
     uint16_t value = 0;
 
     for (std::size_t i = 0; i < sizeof(uint16_t); i++) {
         value |= static_cast<uint16_t>(data[offset++]) << (i * 8);
     }
-
-    offset += sizeof(uint16_t);
 
     return value;
 }
@@ -61,8 +55,6 @@ static uint8_t read_uint8(std::vector<std::uint8_t>& data, std::size_t& offset) 
         value |= static_cast<uint8_t>(data[offset++]) << (i * 8);
     }
 
-    offset += sizeof(uint8_t);
-
     return value;
 }
 
@@ -71,8 +63,8 @@ void Disassembler::parse_file(std::string& filename) {
 
     std::size_t offset = 0;
 
-    std::size_t const_tab_size = 0;
-    std::size_t func_tab_size = 0;
+    std::uint32_t const_tab_size = 0;
+    std::uint32_t func_tab_size = 0;
 
     const_tab_size = read_uint32(fc, offset);
     const_table.reserve(const_tab_size);
@@ -118,6 +110,9 @@ void Disassembler::disassemble_instruction() {
     case Opcode::DIV:
         instruction_str = "DIV";
         break;
+    case Opcode::MOD:
+        instruction_str = "MOD";
+        break;
     case Opcode::LOAD_CONST:
         instruction_str = "LOAD_CONST " + std::to_string(get_byte());
         break;
@@ -144,6 +139,12 @@ void Disassembler::disassemble_instruction() {
         break;
     case Opcode::RET:
         instruction_str = "RET";
+        break;
+    case Opcode::PRINT:
+        instruction_str = "PRINT";
+        break;
+    case Opcode::EXIT:
+        instruction_str = "EXIT";
         break;
     default:
         break;

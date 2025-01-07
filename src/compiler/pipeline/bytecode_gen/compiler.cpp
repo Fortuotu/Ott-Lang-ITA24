@@ -4,6 +4,7 @@ void Compiler::compile(AST* ast) {
     for (Stmt* stmt : ast->stmts) {
         stmt->accept(*this);
     }
+    main.write_opcode(Opcode::EXIT);
 
     fill_func_table(main.bytes.size());
 }
@@ -18,19 +19,19 @@ void Compiler::write_to_file(std::string& filename) {
     std::uint32_t const_tab_size = 0;
     std::uint32_t func_tab_size = 0;
 
-    const_tab_size = const_table.size() * sizeof(Value);
-    of.write(reinterpret_cast<char*>(const_tab_size), sizeof(const_tab_size));
+    const_tab_size = const_table.size();
+    of.write(reinterpret_cast<char*>(&const_tab_size), sizeof(const_tab_size));
 
-    func_tab_size = func_table.size() * sizeof(std::uint16_t);
-    of.write(reinterpret_cast<char*>(func_tab_size), sizeof(func_tab_size));
+    func_tab_size = func_table.size();
+    of.write(reinterpret_cast<char*>(&func_tab_size), sizeof(func_tab_size));
 
-    of.write(reinterpret_cast<char*>(const_table.data()), const_tab_size);
+    of.write(reinterpret_cast<char*>(const_table.data()), const_tab_size * sizeof(Value));
 
-    of.write(reinterpret_cast<char*>(func_table.data()), func_tab_size);
+    of.write(reinterpret_cast<char*>(func_table.data()), func_tab_size * sizeof(std::uint16_t));
 
-    of.write(reinterpret_cast<char*>(main.bytes.data()), main.bytes.size());
+    of.write(reinterpret_cast<char*>(main.bytes.data()), main.bytes.size() * sizeof(std::uint8_t));
     for (ByteBuffer& func : funcs) {
-        of.write(reinterpret_cast<char*>(func.bytes.data()), func.bytes.size());
+        of.write(reinterpret_cast<char*>(func.bytes.data()), func.bytes.size() * sizeof(std::uint8_t));
     }
 }
 
@@ -61,6 +62,9 @@ void Compiler::visit_binary_expr(BinaryExpr& expr) {
         break;
     case TokenType::OP_DIV:
         buffer->write_opcode(Opcode::DIV);
+        break;
+    case TokenType::OP_MOD:
+        buffer->write_opcode(Opcode::MOD);
         break;
     case TokenType::OP_GREATER:
         buffer->write_opcode(Opcode::GT);
@@ -172,7 +176,7 @@ void Compiler::visit_if_stmt(IfStmt& stmt) {
 
     compile_stmt(stmt.body);
 
-    buffer->backpatch_arg8(jmp_backpatch, buffer->get_last_idx() - jmp_backpatch);
+    buffer->backpatch_arg8(jmp_backpatch, buffer->get_last_idx() + 1 - jmp_backpatch);
 }
 
 void Compiler::visit_assign_stmt(AssignStmt& stmt) {

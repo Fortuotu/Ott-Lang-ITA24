@@ -27,6 +27,7 @@ enum class Opcode {
     SUB,
     MUL,
     DIV,
+    MOD,
     NEG,
 
     GT,
@@ -38,7 +39,9 @@ enum class Opcode {
 
     AND,
     OR,
-    NOT
+    NOT,
+
+    EXIT
 };
 
 using Value = std::int64_t;

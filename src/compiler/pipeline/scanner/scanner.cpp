@@ -68,6 +68,9 @@ bool Scanner::scan_punctuation() {
     case '/':
         tokens.push(Token(TokenType::OP_DIV, "/"));
         return true;
+    case '%':
+        tokens.push(Token(TokenType::OP_MOD, "%"));
+        return true;
     case '=':
         if (match_next_ch('=')) {
             tokens.push(Token(TokenType::OP_EQUALS, "=="));
