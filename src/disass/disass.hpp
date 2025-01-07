@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "runtime/bytecode.hpp"
+#include "file_utils.hpp"
 
 class Disassembler {
 private:

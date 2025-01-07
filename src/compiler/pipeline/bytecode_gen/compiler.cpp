@@ -132,8 +132,8 @@ void Compiler::visit_call_expr(CallExpr& expr) {
     }
 
     buffer->write_opcode(Opcode::CALL);
-    buffer->write_arg8(func_idx.at(expr.name.val));
     buffer->write_arg8(static_cast<std::uint8_t>(expr.args.size()));
+    buffer->write_arg8(func_idx.at(expr.name.val));
 }
 
 void Compiler::visit_grouping_expr(GroupingExpr& expr) {
@@ -201,7 +201,8 @@ void Compiler::visit_call_stmt(CallStmt& stmt) {
     }
 
     buffer->write_opcode(Opcode::CALL);
-    
+    buffer->write_arg8(static_cast<std::uint8_t>(stmt.args.size()));
+    buffer->write_arg8(func_idx.at(stmt.name.val));
 }
 
 void Compiler::visit_print_stmt(PrintStmt& stmt) {
