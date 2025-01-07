@@ -34,34 +34,97 @@ void VM::run() {
 }
 
 void VM::run_instruction() {
+    Value ope1 = 0, ope2 = 0;
+    std::uint8_t idx = 0;
+    std::uint8_t offset = 0;
+
     switch (get_opcode()) {
-    case Opcode::LOAD_CONST: {
-        std::uint8_t idx = get_byte();
+    case Opcode::ADD:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 + ope2);
+        break;
+    case Opcode::SUB:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 - ope2);
+        break;
+    case Opcode::MUL:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 * ope2);
+        break;
+    case Opcode::DIV:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 / ope2);
+        break;
+    case Opcode::MOD:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 % ope2);
+        break;
+    case Opcode::GT:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 > ope2);
+        break;
+    case Opcode::LT:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 < ope2);
+        break;
+    case Opcode::EQ:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 == ope2);
+        break;
+    case Opcode::NEQ:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 != ope2);
+        break;
+    case Opcode::GTE:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 >= ope2);
+        break;
+    case Opcode::LTE:
+        ope2 = pop();
+        ope1 = pop();
+        push(ope1 <= ope2);
+        break;
+    case Opcode::LOAD_CONST:
+        idx = get_byte();
         push(const_table[idx]);
         break;
-    }
-    case Opcode::STORE_GLOBAL: {
-        std::uint8_t idx = get_byte();
+    case Opcode::STORE_GLOBAL:
+        idx = get_byte();
         global_table[idx] = pop();
         break;
-    }
-    case Opcode::LOAD_GLOBAL: {
-        std::uint8_t idx = get_byte();
+    case Opcode::LOAD_GLOBAL:
+        idx = get_byte();
         push(global_table[idx]);
         break;
-    }
-    case Opcode::PRINT: {
+    case Opcode::JUMP_IF_FALSE:
+        offset = get_byte();
+        if (pop() == false) {
+            ip += offset;
+        }
+        break;
+    case Opcode::JUMP_BACK:
+        offset = get_byte();
+        ip -= offset;
+        break;
+    case Opcode::PRINT:
         std::cout << pop() << std::endl;
         break;
-    }
-    case Opcode::EXIT: {
+    case Opcode::EXIT:
         exited = true;
         break;
-    }
-    default: {
-        std::cout << "Unknown instruction, aborting...";
+    default:
+        std::cout << "Unknown instruction, aborting...\n";
         exited = true;
         break;
-    }
     };
 }

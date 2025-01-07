@@ -25,6 +25,7 @@ private:
     BlockStmt* parse_block_stmt();
     RetStmt* parse_ret_stmt();
     IfStmt* parse_if_stmt();
+    WhileStmt* parse_while_stmt();
     AssignStmt* parse_assign_stmt(Token& name);
     CallStmt* parse_call_stmt(Token& name);
     PrintStmt* parse_print_stmt();

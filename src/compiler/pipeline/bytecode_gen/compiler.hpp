@@ -44,6 +44,7 @@ public:
     virtual void visit_block_stmt(BlockStmt& stmt) override;
     virtual void visit_ret_stmt(RetStmt& stmt) override;
     virtual void visit_if_stmt(IfStmt& stmt) override;
+    virtual void visit_while_stmt(WhileStmt& stmt) override;
     virtual void visit_assign_stmt(AssignStmt& stmt) override;
     virtual void visit_call_stmt(CallStmt& stmt) override;
     virtual void visit_print_stmt(PrintStmt& stmt) override;

@@ -10,6 +10,7 @@ struct FuncDecl;
 struct BlockStmt;
 struct RetStmt;
 struct IfStmt;
+struct WhileStmt;
 struct AssignStmt;
 struct CallStmt;
 
@@ -21,6 +22,7 @@ struct StmtVisitor {
     virtual void visit_block_stmt(BlockStmt& stmt) = 0;
     virtual void visit_ret_stmt(RetStmt& stmt) = 0;
     virtual void visit_if_stmt(IfStmt& stmt) = 0;
+    virtual void visit_while_stmt(WhileStmt& stmt) = 0;
     virtual void visit_assign_stmt(AssignStmt& stmt) = 0;
     virtual void visit_call_stmt(CallStmt& stmt) = 0;
     virtual void visit_print_stmt(PrintStmt& stmt) = 0;
@@ -57,6 +59,13 @@ struct IfStmt : Stmt {
     BlockStmt* body;
 
     virtual void accept(StmtVisitor& visitor) override { visitor.visit_if_stmt(*this); }
+};
+
+struct WhileStmt : Stmt {
+    Expr* cond;
+    BlockStmt* body;
+
+    virtual void accept(StmtVisitor& visitor) override { visitor.visit_while_stmt(*this); }
 };
 
 struct AssignStmt : Stmt {

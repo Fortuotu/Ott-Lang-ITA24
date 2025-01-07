@@ -85,6 +85,11 @@ void ParseAnalyser::visit_if_stmt(IfStmt& stmt) {
     analyze_stmt(stmt.body);
 }
 
+void ParseAnalyser::visit_while_stmt(WhileStmt& stmt) {
+    analyze_expr(stmt.cond);
+    analyze_stmt(stmt.body);
+}
+
 void ParseAnalyser::visit_assign_stmt(AssignStmt& stmt) {
     analyze_expr(stmt.right_operand);
 

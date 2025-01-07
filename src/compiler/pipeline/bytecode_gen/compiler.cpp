@@ -176,7 +176,23 @@ void Compiler::visit_if_stmt(IfStmt& stmt) {
 
     compile_stmt(stmt.body);
 
-    buffer->backpatch_arg8(jmp_backpatch, buffer->get_last_idx() + 1 - jmp_backpatch);
+    buffer->backpatch_arg8(jmp_backpatch, buffer->get_last_idx() - jmp_backpatch);
+}
+
+void Compiler::visit_while_stmt(WhileStmt& stmt) {
+    std::size_t loop_start = buffer->get_last_idx();
+
+    compile_expr(stmt.cond);
+
+    buffer->write_opcode(Opcode::JUMP_IF_FALSE);
+    std::size_t jmp_backpatch = buffer->write_arg8(0xff);
+
+    compile_stmt(stmt.body);
+
+    buffer->write_opcode(Opcode::JUMP_BACK);
+    buffer->write_arg8(buffer->get_last_idx() + 1 - loop_start);
+
+    buffer->backpatch_arg8(jmp_backpatch, buffer->get_last_idx() - jmp_backpatch);
 }
 
 void Compiler::visit_assign_stmt(AssignStmt& stmt) {

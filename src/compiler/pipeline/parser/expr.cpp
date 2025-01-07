@@ -38,7 +38,7 @@ Expr* Parser::parse_factor() {
     Expr* root = parse_unary();
     if (root == nullptr) { return nullptr; }
 
-    if (consumer.match({TokenType::OP_MUL, TokenType::OP_DIV, TokenType::OP_MOD})) {
+    if (consumer.match({TokenType::OP_MUL, TokenType::OP_DIV, TokenType::OP_MOD, TokenType::OP_GREATER, TokenType::OP_LESS})) {
         TokenType type = consumer.get_type();
 
         Expr* factor = parse_factor();

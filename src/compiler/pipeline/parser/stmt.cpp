@@ -19,6 +19,9 @@ Stmt* Parser::parse_stmt() {
     case TokenType::KW_IF:
         stmt = parse_if_stmt();
         break;
+    case TokenType::KW_WHILE:
+        stmt = parse_while_stmt();
+        break;
     case TokenType::IDENTIFIER:
         name = consumer.get();
         if (consumer.match({TokenType::OP_ASSIGN})) {
@@ -92,6 +95,23 @@ RetStmt* Parser::parse_ret_stmt() {
 
 IfStmt* Parser::parse_if_stmt() {
     IfStmt* stmt = new IfStmt();
+
+    if (!consumer.match({TokenType::OPEN_PARENTH})) { return nullptr; }
+
+    stmt->cond = parse_expr();
+    if (!stmt->cond) { return nullptr; }
+
+    if (!consumer.match({TokenType::CLOSE_PARENTH})) { return nullptr; }
+    if (!consumer.match({TokenType::OPEN_CURLY})) { return nullptr; }
+
+    stmt->body = parse_block_stmt();
+    if (!stmt->body) { return nullptr; }
+
+    return stmt;
+}
+
+WhileStmt* Parser::parse_while_stmt() {
+    WhileStmt* stmt = new WhileStmt();
 
     if (!consumer.match({TokenType::OPEN_PARENTH})) { return nullptr; }
 

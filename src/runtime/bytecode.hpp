@@ -13,6 +13,7 @@ enum class Opcode {
 
     JUMP_IF_TRUE,
     JUMP_IF_FALSE,
+    JUMP_BACK,
     CALL,
 
     LOAD_CONST,

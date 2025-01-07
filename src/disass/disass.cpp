@@ -55,6 +55,24 @@ void Disassembler::disassemble_instruction() {
     case Opcode::MOD:
         instruction_str = "MOD";
         break;
+    case Opcode::GT:
+        instruction_str = "GT";
+        break;
+    case Opcode::LT:
+        instruction_str = "LT";
+        break;
+    case Opcode::EQ:
+        instruction_str = "EQ";
+        break;
+    case Opcode::NEQ:
+        instruction_str = "NEQ";
+        break;
+    case Opcode::GTE:
+        instruction_str = "GTE";
+        break;
+    case Opcode::LTE:
+        instruction_str = "LTE";
+        break;
     case Opcode::LOAD_CONST:
         instruction_str = "LOAD_CONST " + std::to_string(get_byte());
         break;
@@ -75,6 +93,9 @@ void Disassembler::disassemble_instruction() {
         break;
     case Opcode::JUMP_IF_FALSE:
         instruction_str = "JMP_IF_FALSE " + std::to_string(get_byte());
+        break;
+    case Opcode::JUMP_BACK:
+        instruction_str = "JUMP_BACK " + std::to_string(get_byte());
         break;
     case Opcode::CALL:
         instruction_str = "CALL " + std::to_string(get_byte()) + ", " + std::to_string(get_byte());
